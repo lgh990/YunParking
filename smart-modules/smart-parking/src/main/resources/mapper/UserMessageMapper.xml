@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.UserMessageMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.UserMessage" id="userMessageMap">
+        <result property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="title" column="title"/>
+        <result property="msgType" column="msg_type"/>
+        <result property="feedbackType" column="feedback_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="readFlag" column="read_flag"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="proSign" column="pro_sign"/>
+        <result property="leavingTime" column="leaving_time"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+    <select id="updateUserMessageByOrderNum" >
+        UPDATE user_message SET pro_sign=#{proceStatus} WHERE order_num = #{orderNum}
+    </select>
+
+</mapper>

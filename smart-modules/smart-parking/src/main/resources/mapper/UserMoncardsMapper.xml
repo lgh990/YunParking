@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.UserMoncardsMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.UserMoncards" id="userMoncardsMap">
+        <result property="moncardsId" column="moncards_id"/>
+        <result property="plateId" column="plate_id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="moncardsHostman" column="moncards_hostman"/>
+        <result property="moncardsTelephone" column="moncards_telephone"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+
+    <select id="queryMonthCardByUserId" resultMap="userMoncardsMap">
+        SELECT a.moncards_id,plate_id,parking_id, max(a.end_date) as end_date,a.enabled_flag,a.crt_time FROM user_moncards a ,plate b WHERE a.plate_id = b.pla_id AND b.user_id= #{userId} group by parking_id order by a.end_date desc
+    </select>
+
+    <select id="queryMonthCards" parameterType="Map" resultType="Map">
+        select
+        um.moncards_id,
+        um.plate_id,
+        pl.car_number,
+        um.parking_id,
+        pk.parking_name,
+        um.moncards_hostman,
+        um.moncards_telephone,
+        um.start_date,
+        um.crt_time,
+        um.end_date
+        from user_moncards um
+        left join parking pk on um.parking_id = pk.parking_id
+        left join plate pl on um.plate_id = pl.pla_id
+        where 1=1
+        <if test="moncardsTelephone != null and moncardsTelephone != ''">
+            and um.moncards_telephone LIKE CONCAT(CONCAT('%', #{moncardsTelephone}), '%')
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and um.start_date between #{beginTime} and #{endTime}
+        </if>
+        order by um.start_date DESC
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="queryMonthCardsCount" parameterType="Map" resultType="Integer">
+        select
+        count(1)
+        from user_moncards um
+        left join parking pk on um.parking_id = pk.parking_id
+        left join plate pl on um.plate_id = pl.pla_id
+        where 1=1
+        <if test="moncardsTelephone != null and moncardsTelephone != ''">
+            and um.moncards_telephone LIKE CONCAT(CONCAT('%', #{moncardsTelephone}), '%')
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and um.start_date between #{beginTime} and #{endTime}
+        </if>
+    </select>
+
+    <select id="queryMonthCardsCountByUsing" parameterType="Map" resultType="Long">
+        select
+        count(1)
+        from user_moncards um
+        left join parking pk on um.parking_id = pk.parking_id
+        where 1=1
+        and um.enabled_flag = 'y'
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and pk.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and um.parking_id = #{parkingId}
+        </if>
+    </select>
+
+</mapper>

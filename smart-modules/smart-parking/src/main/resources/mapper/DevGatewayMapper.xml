@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.DevGatewayMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.DevGateway" id="devGatewayMap">
+        <result property="gwId" column="GW_ID"/>
+        <result property="enabledFlag" column="ENABLED_FLAG"/>
+        <result property="crtUser" column="CRT_USER"/>
+        <result property="updUser" column="UPD_USER"/>
+        <result property="updDate" column="UPD_DATE"/>
+        <result property="dataOwnedSys" column="DATA_OWNED_SYS"/>
+        <result property="networkMode" column="NETWORK_MODE"/>
+        <result property="proCode" column="PRO_CODE"/>
+        <result property="severIpPort" column="SEVER_IP_PORT"/>
+        <result property="recvPeriod" column="RECV_PERIOD"/>
+        <result property="sgmId" column="SGM_ID"/>
+        <result property="gwCruposition" column="GW_CRUPOSITION"/>
+        <result property="gwCurfreq" column="GW_CURFREQ"/>
+        <result property="gwDevnumber" column="GW_DEVNUMBER"/>
+        <result property="gwName" column="GW_NAME"/>
+        <result property="gwSn" column="GW_SN"/>
+        <result property="gwVersion" column="GW_VERSION"/>
+        <result property="phoneNum" column="PHONE_NUM"/>
+        <result property="repairPhone" column="REPAIR_PHONE"/>
+        <result property="resetTimes" column="RESET_TIMES"/>
+        <result property="sgmSum" column="SGM_SUM"/>
+        <result property="devIndex" column="DEV_INDEX"/>
+        <result property="devData" column="DEV_DATA"/>
+        <result property="gwModSn" column="GW_MOD_SN"/>
+        <result property="loginFlag" column="LOGIN_FLAG"/>
+        <result property="encryptionMark" column="ENCRYPTION_MARK"/>
+        <result property="currVoltage1" column="CURR_VOLTAGE1"/>
+        <result property="currVoltage2" column="CURR_VOLTAGE2"/>
+        <result property="currVoltage3" column="CURR_VOLTAGE3"/>
+        <result property="dsTemp" column="DS_TEMP"/>
+        <result property="emTemp" column="EM_TEMP"/>
+        <result property="enWeb" column="EN_WEB"/>
+        <result property="swicoverStatus" column="SWICOVER_STATUS"/>
+        <result property="parkingId" column="PARKING_ID"/>
+        <result property="attribute1" column="ATTRIBUTE1"/>
+        <result property="attribute2" column="ATTRIBUTE2"/>
+        <result property="attribute3" column="ATTRIBUTE3"/>
+        <result property="attribute4" column="ATTRIBUTE4"/>
+        <result property="severIpPort1" column="SEVER_IP_PORT1"/>
+        <result property="gwDevnumber2" column="GW_DEVNUMBER2"/>
+        <result property="planResetsCount" column="PLAN_RESETS_COUNT"/>
+        <result property="dataWriteAddress" column="DATA_WRITE_ADDRESS"/>
+        <result property="dataReadAddress" column="DATA_READ_ADDRESS"/>
+        <result property="dataWriteAddress256" column="DATA_WRITE_ADDRESS256"/>
+        <result property="dataReadAddress256" column="DATA_READ_ADDRESS256"/>
+        <result property="gwModularVersionSn" column="GW_MODULAR_VERSION_SN"/>
+        <result property="crtTime" column="CRT_TIME"/>
+    </resultMap>
+
+</mapper>

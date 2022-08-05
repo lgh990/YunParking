@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<body>
+<!--
+<button class="canyu">pay</button>
+-->
+<script src="/api/parking/jquery-2.1.4.min.js"></script>
+<script src="/api/parking/url.js"></script>
+<script type="text/javascript">
+    function GetUrlParam(paraName) {
+        var url = document.location.toString();
+        var arrObj = url.split("?");
+
+        if (arrObj.length > 1) {
+            var arrPara = arrObj[1].split("&");
+            var arr;
+
+            for (var i = 0; i < arrPara.length; i++) {
+                arr = arrPara[i].split("=");
+
+                if (arr != null && arr[0] == paraName) {
+                    return arr[1];
+                }
+            }
+            return "";
+        }
+        else {
+            return "";
+        }
+    }
+    function loadWxpay() {
+        //转为jsp后从session中获取
+        var ordernum = GetUrlParam("ordernum");
+        var openId = GetUrlParam("openId");
+        //调用支付接口
+            $.ajax({
+                type : "POST",
+                dataType : "json",
+                url:get_topay_servlet(),
+                data: {
+                    params:'{"api_name":"","params":{"pageNumber":"1","pageSize":"10","openId":"'+openId+'","ordernum":"'+ordernum+'"}}'
+                },
+                contentType : "application/x-www-form-urlencoded;charset=utf-8",
+                success: function(json) {
+                    WeixinJSBridge.invoke('getBrandWCPayRequest', {
+                            "appId": json.data.appId,
+                            "timeStamp": json.data.timeStamp,
+                            "nonceStr": json.data.nonceStr,
+                            "package": json.data.packages,
+                            "signType": "MD5",
+                            "paySign": json.data.sign
+                        },
+                        //调起微信支付成功
+                        function(res) {
+                            WeixinJSBridge.log(res.err_msg);
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                WeixinJSBridge.invoke('closeWindow', {}, function (res) {});
+                            } else {
+                                WeixinJSBridge.invoke('closeWindow', {}, function (res) {});
+                            }
+                        });
+                },
+                //调起微信支付失败，恢复到原来的订单量
+                error:function(res){
+                    alert(res);
+                    alert(res.err_code_des);
+
+                }
+            });
+    };
+/*
+    $(".canyu").click(function() {
+        loadWxpay();
+    });
+*/
+
+    if (typeof WeixinJSBridge == "undefined"){
+        if( document.addEventListener ){
+            document.addEventListener('WeixinJSBridgeReady', loadWxpay, false);
+        }else if (document.attachEvent){
+            document.attachEvent('WeixinJSBridgeReady', loadWxpay);
+            document.attachEvent('onWeixinJSBridgeReady', loadWxpay);
+        }
+    }else{
+        loadWxpay();
+    }
+
+</script>
+</body>
+
+
+</html>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.dev.mapper.DevMaintenanceRecordsMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.dev.entity.DevMaintenanceRecords" id="devMaintenanceRecordsMap">
+        <result property="id" column="id"/>
+        <result property="devId" column="dev_id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="instTime" column="inst_time"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+    </resultMap>
+
+    <select id="maintenanceRecordsDevQuery" parameterType="Map" resultType="Map">
+        select
+        dmr.id,
+        dmr.inst_time,
+        dt.type_name,
+        o.onerankdev_dev_sn,
+        p.parking_name,
+        dmr.enabled_flag,
+        dmr.upd_time
+        from
+        dev_maintenance_records dmr
+        left join onerankdev o on dmr.dev_id = o.dev_id
+        left join dev_type dt on dt.type_code = o.onerankdev_type
+        left join parking p on p.parking_id = dmr.parking_id
+        where 1=1
+        <if test="parkingName != null and parkingName != ''">
+            and p.parking_name LIKE CONCAT(CONCAT('%', #{parkingName}), '%')
+        </if>
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and o.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="enabledFlag != null and enabledFlag != ''">
+            and dmr.enabled_flag = #{enabledFlag}
+        </if>
+        <if test="onerankdevDevSn != null and onerankdevDevSn != ''">
+            and o.onerankdev_dev_sn LIKE CONCAT(CONCAT('%', #{onerankdevDevSn}), '%')
+            or dmr.gw_sn LIKE CONCAT(CONCAT('%', #{onerankdevDevSn}), '%')
+        </if>
+        <if test="instTime != null and instTime != ''">
+            and date_format(dmr.inst_time,'%Y-%m-%d')=#{instTime}
+        </if>
+        <if test="isGateway != null and isGateway != ''">
+            and dmr.dev_id is null
+        </if>
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="maintenanceRecordsDevCount" parameterType="Map" resultType="Integer">
+        select
+        count(1)
+        from
+        dev_maintenance_records dmr
+        left join onerankdev o on dmr.dev_id = o.dev_id
+        left join dev_type dt on dt.type_code = o.onerankdev_type
+        left join parking p on p.parking_id = dmr.parking_id
+        where 1=1
+        <if test="parkingName != null and parkingName != ''">
+            and parking_name LIKE CONCAT(CONCAT('%', #{parkingName}), '%')
+        </if>
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and o.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="enabledFlag != null and enabledFlag != ''">
+            and dmr.enabled_flag = #{enabledFlag}
+        </if>
+        <if test="onerankdevDevSn != null and onerankdevDevSn != ''">
+            and o.onerankdev_dev_sn LIKE CONCAT(CONCAT('%', #{onerankdevDevSn}), '%')
+            or dmr.gw_sn LIKE CONCAT(CONCAT('%', #{onerankdevDevSn}), '%')
+        </if>
+        <if test="instTime != null and instTime != ''">
+            and date_format(inst_time,'%Y-%m-%d')=#{instTime}
+        </if>
+        <if test="isGateway != null and isGateway != ''">
+            and dmr.dev_id is null
+        </if>
+    </select>
+
+    <select id="queryEveryMonthCountByYear" parameterType="Map" resultType="Map" >
+        SELECT
+            sum( CASE MONTH ( a.crt_time ) WHEN '1' THEN 1 ELSE 0 END ) AS January,
+            sum( CASE MONTH ( a.crt_time ) WHEN '2' THEN 1 ELSE 0 END ) AS February,
+            sum( CASE MONTH ( a.crt_time ) WHEN '3' THEN 1 ELSE 0 END ) AS March,
+            sum( CASE MONTH ( a.crt_time ) WHEN '4' THEN 1 ELSE 0 END ) AS April,
+            sum( CASE MONTH ( a.crt_time ) WHEN '5' THEN 1 ELSE 0 END ) AS May,
+            sum( CASE MONTH ( a.crt_time ) WHEN '6' THEN 1 ELSE 0 END ) AS June,
+            sum( CASE MONTH ( a.crt_time ) WHEN '7' THEN 1 ELSE 0 END ) AS July,
+            sum( CASE MONTH ( a.crt_time ) WHEN '8' THEN 1 ELSE 0 END ) AS August,
+            sum( CASE MONTH ( a.crt_time ) WHEN '9' THEN 1 ELSE 0 END ) AS September,
+            sum( CASE MONTH ( a.crt_time ) WHEN '10' THEN 1 ELSE 0 END ) AS October,
+            sum( CASE MONTH ( a.crt_time ) WHEN '11' THEN 1 ELSE 0 END ) AS November,
+            sum( CASE MONTH ( a.crt_time ) WHEN '12' THEN 1 ELSE 0 END ) AS December
+        FROM
+	    itparking.dev_maintenance_records a
+	    left join onerankdev o on o.dev_id = a.dev_id
+	    left join dev_gateway dg on o.gw_sn = dg.GW_SN
+        left join parking p on dg.parking_id = p.parking_id
+        WHERE YEAR ( a.crt_time ) = ${queryYear}
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and o.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="parkingId != null and parkingId != ''">
+            and dg.PARKING_ID = #{parkingId}
+        </if>
+        <if test="parkingAddress != null and parkingAddress != ''">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="isGateway != null and isGateway != ''">
+            and a.dev_id is null
+        </if>
+    </select>
+
+    <select id="queryEveryDayCountByMouth" parameterType="Map" resultType="Map" >
+        SELECT
+            COUNT(1) AS countNumber,
+            DATE_FORMAT(a.crt_time,'%Y-%m-%d') AS dateTime
+        FROM itparking.dev_maintenance_records a
+        left join onerankdev o on o.dev_id = a.dev_id
+        left join dev_gateway dg on o.gw_sn = dg.GW_SN
+        left join parking p on dg.parking_id = p.parking_id
+        where YEAR ( a.crt_time ) = ${queryYear}
+            and MONTH ( a.crt_time ) = ${queryMonth}
+
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and o.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="parkingId != null and parkingId != ''">
+            and dg.PARKING_ID = #{parkingId}
+        </if>
+        <if test="parkingAddress != null and parkingAddress != ''">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="isGateway != null and isGateway != ''">
+            and a.dev_id is null
+        </if>
+        GROUP BY DATE_FORMAT(a.crt_time,'%Y-%m-%d')
+    </select>
+
+    <select id="queryRecordsCountByType" parameterType="Map" resultType="Integer">
+        select count(1)
+        from dev_maintenance_records dmr
+        left join onerankdev o on o.dev_id = dmr.dev_id
+        left join dev_gateway dg on o.gw_sn = dg.GW_SN
+        left join parking p on dg.parking_id = p.parking_id
+        where 1 = 1
+        and o.onerankdev_type = #{onerankdevType}
+        and dmr.enabled_flag = 'y'
+        <if test="parkingAddress != null and parkingAddress != ''">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        and year(dmr.crt_time)=year(now()) and month(dmr.crt_time)=month(now()) and day(dmr.crt_time)=day(now())
+    </select>
+
+</mapper>

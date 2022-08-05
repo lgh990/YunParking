@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.UserParkingSpaceMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.UserParkingSpace" id="userParkingSpaceMap">
+        <result property="id" column="id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="rentalPeriod" column="rental_period"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="queryParkingByUserId" resultMap="userParkingSpaceMap">
+        SELECT * FROM user_parking_space WHERE user_id=#{userId} and attr1='y'
+        <if test="parkingId!=null and parkingId!=''">
+            and  parking_id = #{parkingId}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,88 @@
+logging:
+    level:
+#        tk.mybatis: DEBUG
+        com.yuncitys.smart.security.gate: DEBUG
+server:
+    port: 8999
+
+spring:
+    application:
+        name: smart-transaction-demo2
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non_null
+    datasource:
+        name: test
+        url: jdbc:mysql://119.23.224.60:3306/prod?useUnicode=true&characterEncoding=UTF8
+        username: root
+        password: Syg18664566931
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        druid:
+            filters: stat
+            maxActive: 20
+            initialSize: 1
+            maxWait: 60000
+            minIdle: 1
+            timeBetweenEvictionRunsMillis: 60000
+            minEvictableIdleTimeMillis: 300000
+            validationQuery: select 'x'
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            poolPreparedStatements: true
+            maxOpenPreparedStatements: 20
+    rabbitmq:
+       host: ${RABBIT_MQ_HOST:119.23.224.60}
+       port:  ${RABBIT_MQ_PORT:5672}
+       username: huan
+       password: Syg18664566931
+    zipkin:
+        enabled: true
+    sleuth:
+        sampler:
+            percentage: 1
+    redis:
+        database: 1
+        host: ${REDIS_HOST:localhost}
+        port: ${REDIS_PORT:6379}
+        password: ${REDIS_PASSWORD:smart.IOT@YUNCITYS1_redis}
+        pool:
+            max-active: 20
+
+
+# 配置数据库
+mybatis:
+    mapper-locations: "classpath*:mapper/*.xml"
+
+# 配置swagger
+swagger:
+    enabled: true
+    base-package: com.yuncitys.smart.security.gate
+    title: smart-gate
+    version: 1.0.0.SNAPSHOT
+    description: 服务网关
+    contact:
+        name: admin
+
+# 配置用户认证和服务认证信息
+auth:
+  serviceId: smart-auth
+  user:
+    token-header: Authorization
+    limit-expire: 1440 # 一天过去,单位分钟
+  client:
+    id: smart-transaction
+    secret: 123456
+    token-header: client-token
+
+
+mapper:
+  mappers: com.yuncitys.smart.security.common.mapper.CommonMapper
+
+#txmanager地址
+tm:
+  manager:
+    url: http://127.0.0.1:8899/tx/manager/

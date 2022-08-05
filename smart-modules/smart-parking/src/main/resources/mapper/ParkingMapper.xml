@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.ParkingMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.Parking" id="parkingMap">
+        <result property="parkingId" column="parking_id"/>
+        <result property="version" column="version"/>
+        <result property="cityId" column="city_id"/>
+        <result property="leftNum" column="left_num"/>
+        <result property="parkingAddress" column="parking_address"/>
+        <result property="parkingDescription" column="parking_description"/>
+        <result property="parkingLayer" column="parking_layer"/>
+        <result property="parkingName" column="parking_name"/>
+        <result property="parkingOpen" column="parking_open"/>
+        <result property="parkingType" column="parking_type"/>
+        <result property="parkingBusType" column="parking_bus_type"/>
+        <result property="parkingBusModel" column="parking_bus_model"/>
+        <result property="pointLat" column="point_lat"/>
+        <result property="pointLng" column="point_lng"/>
+        <result property="totalNum" column="total_num"/>
+        <result property="userId" column="user_id"/>
+        <result property="approachNum" column="approach_num"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="dataOwnedSys" column="data_owned_sys"/>
+        <result property="firstHourPrice" column="first_hour_price"/>
+        <result property="chargeRuleId" column="charge_rule_id"/>
+        <result property="parkingRevenue" column="parking_revenue"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+    <select id="queryNearbyParking" resultMap="parkingMap">
+        SELECT a.* FROM parking a,parking_space b WHERE b.parking_id=a.parking_id
+        <if test="spaceType!=null">
+            AND b.space_type=#{spaceType}
+        </if>
+        <if test="chargePile!=null">
+            AND b.charge_pile=#{chargePile}
+        </if>
+        and a.POINT_LAT BETWEEN #{reducelat} and #{addlat} and a.POINT_LNG BETWEEN #{reducelng} and #{addlng} GROUP BY a.parking_id
+        ORDER BY ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((40.0497810000 * PI() / 180 - point_lat * PI() / 180) / 2),2) +
+        COS(40.0497810000 * PI() / 180) * COS(point_lat * PI() / 180) * POW(
+        SIN(( 116.3424590000 * PI() / 180 - point_lng * PI() / 180) / 2), 2 ))))
+    </select>
+    <select id="queryParkingBySpaceNum" resultMap="parkingMap">
+        SELECT b.* FROM parking_space a,parking b WHERE a.parking_id=b.parking_id AND a.space_num= #{spaceNum} AND b.city_id= #{cityCode}
+    </select>
+
+    <select id="querySpaceCountByIds" resultMap="parkingMap">
+        SELECT parking_id ,COUNT(1) AS left_num FROM parking_space WHERE parking_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND abscissa!="0" AND ordinate!="0"
+        AND  lot_type='n' AND space_status='normal' GROUP BY parking_id
+    </select>
+
+    <select id="querySpaceCountByParkingId" resultMap="parkingMap">
+        SELECT parking_id ,COUNT(1) AS left_num FROM parking_space WHERE parking_id = #{parkingId}
+        AND  lot_type='n' AND space_status='normal'
+        <if test="spaceType !=null and ''!=spaceType">
+            AND space_type=#{spaceType}
+        </if>
+    </select>
+
+    <select id="querySpaceCountByParkingIds" resultMap="parkingMap">
+        SELECT parking_id ,COUNT(1) AS left_num FROM parking_space WHERE parking_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND  lot_type='n' AND space_status='normal'
+        <if test="spaceType !=null and ''!=spaceType">
+            AND space_type=#{spaceType}
+        </if>
+        GROUP BY parking_id
+    </select>
+
+    <select id="querySpaceSumByIds" resultMap="parkingMap">
+        SELECT parking_id ,COUNT(1) AS total_num FROM parking_space WHERE parking_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and abscissa!="0" and ordinate!="0"
+        GROUP BY parking_id
+    </select>
+
+    <select id="queryParkingByUserIds" resultMap="parkingMap">
+        SELECT * FROM parking WHERE user_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryNearParking" resultMap="parkingMap">
+        SELECT a.* FROM parking a WHERE
+         a.POINT_LAT BETWEEN #{reducelat} and #{addlat} and a.POINT_LNG BETWEEN #{reducelng} and #{addlng} and a.parking_id != #{parkingId}
+          HAVING (SELECT COUNT(*) FROM parking_space s WHERE s.parking_id=a.parking_id) >0
+          ORDER BY ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN((40.0497810000 * PI() / 180 - point_lat * PI() / 180) / 2),2) +
+          COS(40.0497810000 * PI() / 180) * COS(point_lat * PI() / 180) * POW(
+          SIN(( 116.3424590000 * PI() / 180 - point_lng * PI() / 180) / 2), 2 ))))  DESC LIMIT 1
+    </select>
+
+    <select id="queryEveryMonthCountByYear" parameterType="Map" resultType="Map" >
+        SELECT
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '2' THEN 1 ELSE 0 END ) AS '01',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '3' THEN 1 ELSE 0 END ) AS '02',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '4' THEN 1 ELSE 0 END ) AS '03',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '5' THEN 1 ELSE 0 END ) AS '04',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '6' THEN 1 ELSE 0 END ) AS '05',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '7' THEN 1 ELSE 0 END ) AS '06',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '8' THEN 1 ELSE 0 END ) AS '07',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '9' THEN 1 ELSE 0 END ) AS '08',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '10' THEN 1 ELSE 0 END ) AS '09',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '11' THEN 1 ELSE 0 END ) AS '10',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '12' THEN 1 ELSE 0 END ) AS '11',
+        sum( CASE WHEN MONTH ( a.crt_time ) <![CDATA[ < ]]> '13' THEN 1 ELSE 0 END ) AS '12'
+        FROM
+        itparking.parking a
+        WHERE YEAR ( a.crt_time ) = ${queryYear}
+        <if test="address != '' and address != null">
+            and a.parking_address like concat('%', #{address}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+    </select>
+
+    <select id="queryMonthCount" parameterType="Map" resultType="Long">
+        select count(1) monthCount
+        from itparking.parking a
+        where 1=1
+        and YEAR ( a.crt_time ) = ${year}
+        <if test="month != '' and month != null">
+            and MONTH ( a.crt_time ) = ${month}
+        </if>
+        <if test="month == '' and month == null">
+            and MONTH ( a.crt_time ) = ${firstMonth}
+            or MONTH ( a.crt_time ) = ${secondMonth}
+            or MONTH ( a.crt_time ) = ${thirdMonth}
+        </if>
+        <if test="address != '' and address != null">
+            and a.parking_address like concat('%', #{address}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        GROUP BY DATE_FORMAT(a.crt_time,'%Y')
+    </select>
+</mapper>

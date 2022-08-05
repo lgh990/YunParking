@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.MqttMsgMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.MqttMsg" id="mqttMsgMap">
+        <result property="mmId" column="MM_ID"/>
+        <result property="enabledFlag" column="ENABLED_FLAG"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="createdDate" column="CREATED_DATE"/>
+        <result property="lastUpdateBy" column="LAST_UPDATE_BY"/>
+        <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
+        <result property="dataOwnedSys" column="DATA_OWNED_SYS"/>
+        <result property="topic" column="TOPIC"/>
+        <result property="msg" column="MSG"/>
+        <result property="attribute1" column="ATTRIBUTE1"/>
+        <result property="attribute2" column="ATTRIBUTE2"/>
+        <result property="attribute3" column="ATTRIBUTE3"/>
+        <result property="attribute4" column="ATTRIBUTE4"/>
+    </resultMap>
+
+</mapper>

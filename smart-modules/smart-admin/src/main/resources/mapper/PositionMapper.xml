@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuncitys.smart.security.admin.mapper.PositionMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.yuncitys.smart.security.admin.entity.Position" id="positionMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="departId" column="depart_id"/>
+        <result property="code" column="code"/>
+        <result property="type" column="type"/>
+        <result property="crtUserName" column="crt_user_name"/>
+        <result property="crtUserId" column="crt_user_id"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="updUserName" column="upd_user_name"/>
+        <result property="updUserId" column="upd_user_id"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+    <insert id="insertPositionUser">
+      insert into base_position_user (id,position_id,user_id,tenant_id) values (#{id},#{positionId},#{userId},#{tenantId})
+    </insert>
+    <insert id="insertPositionGroup">
+      insert into base_position_group (id,position_id,group_id,tenant_id) values (#{id},#{positionId},#{groupId},#{tenantId})
+    </insert>
+    <insert id="insertPositionDepart">
+      insert into base_position_depart (id,position_id,depart_id,tenant_id) values (#{id},#{positionId},#{departId},#{tenantId})
+    </insert>
+    <delete id="deletePositionUsers">
+      delete from base_position_user where position_id = #{positionId}
+    </delete>
+    <delete id="deletePositionGroups">
+        delete from base_position_group where position_id = #{positionId}
+    </delete>
+    <delete id="deletePositionDeparts">
+        delete from base_position_depart where position_id = #{positionId}
+    </delete>
+    <select id="selectPositionUsers" resultType="com.yuncitys.smart.security.admin.entity.User">
+        select u.username,u.name,u.id from base_user u inner join base_position_user bpu
+        on bpu.user_id = u.id
+        where bpu.position_id = #{positionId}
+    </select>
+    <select id="selectPositionGroups" resultType="com.yuncitys.smart.security.admin.entity.Group">
+        select g.* from base_group g inner join base_position_group bpg
+        on g.id = bpg.group_id
+        where bpg.position_id = #{positionId}
+    </select>
+    <select id="selectPositionDeparts" resultType="com.yuncitys.smart.security.admin.entity.Depart">
+        select d.* from base_depart d inner join base_position_depart bpd
+        on d.id = bpd.depart_id
+        where bpd.position_id = #{positionId}
+    </select>
+    <select id="selectUserFlowPosition" resultMap="positionMap">
+        select p.* from base_position p
+          inner join base_position_user bpu
+        on bpu.position_id = p.id
+         where type = 'flow' AND bpu.user_id = #{userId}
+    </select>
+
+</mapper>

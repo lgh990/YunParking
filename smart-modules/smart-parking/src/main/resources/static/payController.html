@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>pay</title>
+        <meta http-equiv="pragma" content="no-cache">
+        <meta http-equiv="cache-control" content="no-cache">
+        <meta http-equiv="expires" content="0">
+        <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+        <meta http-equiv="description" content="This is my page">
+        <script src="/api/parking/jquery-2.1.4.min.js"></script>
+        <script src="/api/parking/url.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            var locationSearch=window.location.search;
+            var searchArr=locationSearch.split("&");
+            var orderNum=searchArr[0].split("=")[1];
+            function isAlipayOrWechat() {
+                var userAgent = navigator.userAgent.toLowerCase();
+                console.log(locationSearch);
+                if(userAgent.match(/Alipay/i) == "alipay") {
+                    //请求接口获取表单自动提交
+                    // window.location.href="http://smart-park.com/WxVerify/alipay.html"+locationSearch;
+                    window.location.href=get_alipay_html()+locationSearch;
+                } else if(userAgent.match(/MicroMessenger/i) == "micromessenger") {
+                    window.location.href=get_wxShow_html()+locationSearch;
+                }
+            }
+            $.ajax({
+               /* headers: {
+                    Authorization: "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJwYXJraW5nLWFkbWluIiwidXNlcl9uYW1lIjoicGFya2luZy1hZG1pbiIsInNjb3BlIjpbInJlYWQiXSwiZXhwaXJlIjoxNTM2MjA0Mjg5MTQ4LCJleHAiOjE1MzYyMTUwODksImRlcGFydCI6ImYyMjY4ODNhM2JhNjRhMTE4ODcxNjliZTMwNzcxMTNiIiwidXNlck5hbWUiOiJwYXJraW5nLWFkbWluIiwidXNlcklkIjoiZTA5ZjMzMDY1OTgxNDY5Y2JmZmMxOWFlODllNjlkZGIiLCJhdXRob3JpdGllcyI6WyJST0xFX1VTRVIiXSwianRpIjoiMzNkOWFmNTctYjQ2Yi00ZDhiLTgxYWMtZmYzZDNkZTVkNGRhIiwidGVuYW50IjoiN2JhNzYwMTJkOTllNGE1YzliMzcxODk3M2JkZTI4YzEiLCJjbGllbnRfaWQiOiJ2dWUifQ.E4GY0b7t42Gd3e12fQvCQykoYJ7msHqY1fwIz9h1fLCPuJ61Q_9aM5AyjqIV_AM1ChPwquRWe5KXtVPMof9XUAe2P50bFcpzAC-x7RE5Abt3okg1HOUatTDpQS1JrXrRwtt0KHCUxqZb1wHjP_fPbtjcDfdS6zar0M3jlR2X6BU"
+                },*/
+                type : "POST",
+                dataType : "json",
+                url:get_query_order_status(),
+                data: {
+                    params:'{"api_name":"","params":{"ordernum":"'+orderNum+'"}}'
+                    //params:'{"api_name":"","params":{"ordernum":"'+"201809061349274064"+'"}}'
+                },
+                contentType : "application/x-www-form-urlencoded;charset=utf-8",
+                success: function(json) {
+                    if(json.status == 200) {
+                        isAlipayOrWechat();
+                    }else if(json.status == 100)
+                    {
+                        alert(json.msg);
+                    }
+                }
+            });
+
+
+        </script>
+
+    </body>
+</html>

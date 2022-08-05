@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuncitys.smart.security.dict.mapper.DictValueMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.yuncitys.smart.security.dict.entity.DictValue" id="dictValueMap">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="value" column="value"/>
+        <result property="typeId" column="type_id"/>
+        <result column="order_num" javaType="INTEGER"/>
+        <result property="labelDefault" column="label_default"/>
+        <result property="labelEnUs" column="label_en_US"/>
+        <result property="labelZhCh" column="label_zh_CH"/>
+        <result property="labelAttr1" column="label_attr1"/>
+        <result property="labelAttr2" column="label_attr2"/>
+        <result property="labelAttr3" column="label_attr3"/>
+        <result property="crtUserName" column="crt_user_name"/>
+        <result property="crtUserId" column="crt_user_id"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="updUserName" column="upd_user_name"/>
+        <result property="updUserId" column="upd_user_id"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+
+</mapper>

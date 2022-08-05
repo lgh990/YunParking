@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.dev.mapper.DevEarlyWarningMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.dev.entity.DevEarlyWarning" id="devEarlyWarningMap">
+        <result property="id" column="id"/>
+        <result property="gwSn" column="gw_sn"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="max" column="max"/>
+        <result property="min" column="min"/>
+        <result property="keyname" column="keyName"/>
+        <result property="key_s" column="key"/>
+    </resultMap>
+
+</mapper>

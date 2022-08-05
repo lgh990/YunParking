@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.ParkingOrdersMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.ParkingOrders" id="parkingOrdersMap">
+        <result property="orderId" column="order_id"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="reverseDate" column="reverse_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="chargeRulesTypeId" column="charge_rules_type_id"/>
+        <result property="lmId" column="lm_id"/>
+        <result property="lpId" column="lp_id"/>
+        <result property="orderStatus" column="order_status"/>
+        <result property="orderType" column="order_type"/>
+        <result property="privateUserId" column="private_user_id"/>
+        <result property="parkingBusType" column="parking_bus_type"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="parkingLongTime" column="parking_long_time"/>
+        <result property="plaId" column="pla_id"/>
+        <result property="realMoney" column="real_money"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="orderNumMd5" column="order_num_md5"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="udId" column="ud_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="chargeId" column="charge_id"/>
+        <result property="chargeDate" column="charge_date"/>
+        <result property="platenumImage" column="platenum_image"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="payType" column="pay_type"/>
+        <result property="position" column="position"/>
+        <result property="createOrderType" column="create_order_type"/>
+        <result property="errorType" column="error_type"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="monthCardPrice" column="month_card_price"/>
+        <result property="monthCount" column="month_count"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+    </resultMap>
+
+    <select id="findMaxEndDateByLmId" resultType="String">
+    SELECT MAX(END_DATE) FROM parking_orders  WHERE LM_ID=#{lmId}
+    </select>
+
+    <select id="findMaxStartDateByLpId" resultType="String">
+        SELECT MAX(begin_date) FROM parking_orders  WHERE lp_id=#{lpId}
+    </select>
+
+    <select id="queryRealMoneyByUserId" resultType="BigDecimal">
+        SELECT SUM(real_money) FROM parking_orders WHERE charge_id=#{chargeId} AND SUBSTRING(charge_date,1,10)=#{chargeDate}
+    </select>
+    <select id="queryOrderCountByUserId" resultType="Integer">
+        SELECT COUNT(1) FROM parking_orders WHERE charge_id=#{chargeId} AND SUBSTRING(charge_date,1,10)=#{chargeDate}
+    </select>
+    <select id="queryPrivateUserAndParking" resultMap="parkingOrdersMap">
+        SELECT SUM(attr1) AS attr1,parking_id,space_id FROM parking_orders WHERE  private_user_id = #{privateUserId} AND SUBSTRING(end_date,1,7)=DATE_FORMAT(NOW(),'%Y-%m')
+         <if test="parkingId!=null and parkingId!=''">
+            and  parking_id = #{parkingId}
+         </if>
+         GROUP BY parking_id,space_id
+    </select>
+    <select id="selectByParenIds" resultMap="parkingOrdersMap">
+        SELECT * FROM parking_orders WHERE parent_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryPrivateUserSpaceOrder" resultMap="parkingOrdersMap">
+        SELECT * FROM parking_orders WHERE order_status='complete' and
+        space_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        limit #{page},#{limit}
+    </select>
+    <select id="queryPrivateUserSpaceOrderCount" resultType="Integer">
+        SELECT COUNT(1) FROM parking_orders where order_status='complete' and
+        space_id IN
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectBySpaceIds" resultMap="parkingOrdersMap">
+        SELECT * FROM parking_orders WHERE 1=1
+        <if test="idList.size()>0">
+           and space_id IN
+        </if>
+        <foreach collection="idList" item="id" index="index"
+                 open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and order_status=#{orderStatus}
+
+    </select>
+
+    <select id="queryOrdersByPage" parameterType="Map" resultType="Map">
+        select po.order_id,
+        po.order_type,
+        po.order_status,
+        pa.parking_name,
+        po.order_num,
+        po.begin_date,
+        po.end_date,
+        p.car_number,
+        ps.space_num,
+        po.real_money,
+        po.pay_type,
+        po.pay_status
+        from itparking.parking_orders po
+        left join itparking.plate p on po.pla_id = p.pla_id
+        left join itparking.parking pa on pa.parking_id = po.parking_id
+        left join itparking.parking_space ps on po.space_id = ps.space_id
+        where 1=1
+        <if test="beginTime != '' and beginTime != null">
+            and po.crt_time between #{beginTime} and #{endTime}
+        </if>
+        <if test="carNumber != '' and carNumber != null">
+            and p.car_number like concat('%', #{carNumber}, '%')
+        </if>
+        <if test="payType != '' and payType != null">
+            and po.pay_type = #{payType}
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and po.parking_id = #{parkingId}
+        </if>
+        <if test="userId != '' and userId != null">
+            and po.user_id = #{userId}
+        </if>
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="queryOrdersByCount" parameterType="Map" resultType="Long">
+        select count(1)
+        from itparking.parking_orders po
+        left join itparking.plate p on po.pla_id = p.pla_id
+        left join itparking.parking pa on pa.parking_id = po.parking_id
+        left join itparking.parking_space ps on po.space_id = ps.space_id
+        where 1=1
+        <if test="beginTime != '' and beginTime != null">
+            and po.crt_time between #{beginTime} and #{endTime}
+        </if>
+        <if test="carNumber != '' and carNumber != null">
+            and p.car_number like concat('%', #{carNumber}, '%')
+        </if>
+        <if test="payType != '' and payType != null">
+            and po.pay_type = #{payType}
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and po.parking_id = #{parkingId}
+        </if>
+        <if test="userId != '' and userId != null">
+            and po.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="countTurnover" parameterType="Map" resultType="Map" >
+        SELECT
+        sum(real_money) AS sumMoney,
+        DATE_FORMAT(crt_time,'%Y-%m-%d') AS dateTime
+        FROM itparking.parking_orders po
+        left join itparking.parking p on po.parking_id = p.parking_id
+        where 1=1
+        <if test="address != '' and address != null">
+            and p.parking_address like concat('%', #{address}, '%')
+        </if>
+        <if test="parkingName != '' and parkingName != null">
+            and p.parking_name = #{parkingName}
+        </if>
+        <if test="format = 'day'">
+            and YEAR ( crt_time ) = ${queryYear}
+            and MONTH ( crt_time ) = ${queryMonth}
+            GROUP BY DATE_FORMAT(crt_time,'%Y-%m-%d');
+        </if>
+        <if test="format = 'mouth'">
+            and YEAR ( crt_time ) = ${queryYear}
+            GROUP BY DATE_FORMAT(crt_time,'%Y-%m');
+        </if>
+    </select>
+
+    <select id="queryMoneyByMonth" parameterType="Map" resultType="Map" >
+        SELECT
+            sum(real_money) AS sumMoney,
+            DATE_FORMAT(crt_time,'%Y-%m') AS dateTime
+        FROM itparking.parking_orders
+        where YEAR ( crt_time ) = ${queryYear}
+        GROUP BY DATE_FORMAT(crt_time,'%Y-%m');
+    </select>
+
+    <select id="queryEveryMonthCountByYear" parameterType="Map" resultType="Map" >
+        SELECT
+        sum( CASE MONTH ( a.crt_time ) WHEN '1' THEN 1 ELSE 0 END ) AS January,
+        sum( CASE MONTH ( a.crt_time ) WHEN '2' THEN 1 ELSE 0 END ) AS February,
+        sum( CASE MONTH ( a.crt_time ) WHEN '3' THEN 1 ELSE 0 END ) AS March,
+        sum( CASE MONTH ( a.crt_time ) WHEN '4' THEN 1 ELSE 0 END ) AS April,
+        sum( CASE MONTH ( a.crt_time ) WHEN '5' THEN 1 ELSE 0 END ) AS May,
+        sum( CASE MONTH ( a.crt_time ) WHEN '6' THEN 1 ELSE 0 END ) AS June,
+        sum( CASE MONTH ( a.crt_time ) WHEN '7' THEN 1 ELSE 0 END ) AS July,
+        sum( CASE MONTH ( a.crt_time ) WHEN '8' THEN 1 ELSE 0 END ) AS August,
+        sum( CASE MONTH ( a.crt_time ) WHEN '9' THEN 1 ELSE 0 END ) AS September,
+        sum( CASE MONTH ( a.crt_time ) WHEN '10' THEN 1 ELSE 0 END ) AS October,
+        sum( CASE MONTH ( a.crt_time ) WHEN '11' THEN 1 ELSE 0 END ) AS November,
+        sum( CASE MONTH ( a.crt_time ) WHEN '12' THEN 1 ELSE 0 END ) AS December
+        FROM
+        itparking.parking_orders a
+        WHERE YEAR ( a.crt_time ) = ${queryYear}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+    </select>
+
+    <select id="queryEveryDayCountByMouth" parameterType="Map" resultType="Map" >
+        SELECT
+        COUNT(1) AS countNumber,
+        DATE_FORMAT(crt_time,'%Y-%m-%d') AS dateTime
+        FROM itparking.parking_orders a
+        where YEAR ( crt_time ) = ${queryYear}
+        and MONTH ( crt_time ) = ${queryMonth}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        GROUP BY DATE_FORMAT(crt_time,'%Y-%m-%d');
+    </select>
+
+    <select id="queryOrdersAllCount" resultType="Long" parameterType="Map">
+        select count(*) from itparking.parking_orders
+        where 1=1
+        <if test="parkingId != '' and parkingId != null">
+            and parking_id = #{parkingId}
+        </if>
+    </select>
+
+    <select id="queryOrdersTimeByMonth" parameterType="Map" resultType="Map">
+        select sum(TIMESTAMPDIFF(minute,a.begin_date,a.end_date)) as 'countTime',
+        count(1) orderNum,
+        DATE_FORMAT(a.crt_time,'%Y-%m-%d') as 'date'
+        from itparking.parking_orders a
+        where year(a.crt_time) = ${queryYear}
+        and month(a.crt_time) = ${queryMonth}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        group by DATE_FORMAT(a.crt_time,'%Y-%m-%d')
+    </select>
+
+    <select id="queryOrdersTimeByYear" parameterType="Map" resultType="Map">
+        select sum(TIMESTAMPDIFF(minute,a.begin_date,a.end_date)) as 'countTime',
+        count(1) orderNum,
+        DATE_FORMAT(a.crt_time,'%Y-%m') as 'date'
+        from itparking.parking_orders a
+        where year(a.crt_time) = ${queryYear}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        group by DATE_FORMAT(a.crt_time,'%Y-%m')
+    </select>
+
+    <select id="payTypeChartByMonth" parameterType="Map" resultType="Map">
+        select
+        sum(a.real_money) money,
+        DATE_FORMAT(a.crt_time,'%Y-%m-%d') date
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1 = 1
+        and year(a.crt_time) = #{queryYear}
+        and month(a.crt_time) = #{queryMonth}
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="payType != '' and payType != null">
+            and a.pay_type = #{payType}
+        </if>
+        group by pay_type,DATE_FORMAT(a.crt_time,'%Y-%m-%d')
+    </select>
+
+    <select id="payTypeChartByYear" parameterType="Map" resultType="Map">
+        select
+        sum(a.real_money) money,
+        DATE_FORMAT(a.crt_time,'%Y-%m') date
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1 = 1
+        and year(a.crt_time) = #{queryYear}
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="payType != '' and payType != null">
+            and a.pay_type = #{payType}
+        </if>
+        group by pay_type,DATE_FORMAT(a.crt_time,'%Y-%m')
+    </select>
+
+    <select id="totalRevenueDayCount" parameterType="Map" resultType="Map">
+        select sum(a.real_money) money,
+        DATE_FORMAT(a.crt_time,'%Y-%m-%d') date
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="queryYear != '' and queryYear != null">
+            and year(a.crt_time) = ${queryYear}
+        </if>
+        <if test="queryMonth != '' and queryMonth != null">
+            and month(a.crt_time) = ${queryMonth}
+        </if>
+        group by DATE_FORMAT(a.crt_time,'%Y-%m-%d')
+    </select>
+
+    <select id="totalRevenueMonthCount" parameterType="Map" resultType="Map">
+        select sum(a.real_money) money,
+        DATE_FORMAT(a.crt_time,'%Y-%m') date
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="queryYear != '' and queryYear != null">
+            and year(a.crt_time) = ${queryYear}
+        </if>
+        group by DATE_FORMAT(a.crt_time,'%Y-%m')
+    </select>
+
+    <select id="userActiveTimes" parameterType="Map" resultType="Map">
+        select sum(case when a.activeTime between 1 and 7 THEN 1 ELSE 0 END) as '1-7',
+        sum(case when a.activeTime between 7 and 15 THEN 1 ELSE 0 END) as '7-15',
+        sum(case when a.activeTime between 15 and 30 THEN 1 ELSE 0 END) as '15-30',
+        sum(case when a.activeTime between 30 and 60 THEN 1 ELSE 0 END) as '30-60',
+        sum(case when a.activeTime between 60 and 180 THEN 1 ELSE 0 END) as '60-180',
+        sum(case when a.activeTime between 180 and 365 THEN 1 ELSE 0 END) as '180-365'
+        from
+        (select count(1) activeTime,user_id from itparking.parking_orders group by user_id) a
+    </select>
+
+    <select id="queryMonthCount" parameterType="Map" resultType="Long">
+        select sum(a.real_money) moneyCount
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        and YEAR ( a.crt_time ) = ${year}
+        <if test="month != '' and month != null">
+            and MONTH ( a.crt_time ) = ${month}
+        </if>
+        <if test="month == '' and month == null">
+            and MONTH ( a.crt_time ) = ${firstMonth}
+            or MONTH ( a.crt_time ) = ${secondMonth}
+            or MONTH ( a.crt_time ) = ${thirdMonth}
+        </if>
+        <if test="address != '' and address != null">
+            and p.parking_address like concat('%', #{address}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        GROUP BY DATE_FORMAT(a.crt_time,'%Y')
+    </select>
+
+    <select id="parkingTimesCount" parameterType="Map" resultType="Long">
+        select count(1) from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+    </select>
+
+    <select id="totalRevenueByAllCount" parameterType="Map" resultType="Double">
+        select sum(a.real_money) from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+    </select>
+
+    <select id="queryOrdersTimeByAllCount" parameterType="Map" resultType="Map">
+        select sum(TIMESTAMPDIFF(minute,a.begin_date,a.end_date)) as countTime,
+        count(1) orderNum
+        from itparking.parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+    </select>
+
+    <select id="countOrdersByBegin" parameterType="Map" resultType="Map">
+        select count(1) countOrders,DATE_FORMAT(a.begin_date,'%Y-%m-%d %h') AS dateTime
+        from parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        and year(a.begin_date) = ${year}
+        and month(a.begin_date) = ${month} and day(a.begin_date) = ${day}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        GROUP BY DATE_FORMAT(a.begin_date,'%Y-%m-%d %h')
+
+    </select>
+
+    <select id="countOrdersByEnd" parameterType="Map" resultType="Map">
+        select count(1) countOrders,DATE_FORMAT(a.end_date,'%Y-%m-%d %h') AS dateTime
+        from parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        and year(a.end_date) = ${year}
+        and month(a.end_date) = ${month} and day(a.end_date) = ${day}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        GROUP BY DATE_FORMAT(a.end_date,'%Y-%m-%d %h')
+    </select>
+
+    <select id="sumMoneyByEnd" parameterType="Map" resultType="Map">
+        select sum(a.real_money) sumMoney,DATE_FORMAT(a.end_date,'%Y-%m-%d %h') AS dateTime
+        from parking_orders a
+        left join parking p on a.parking_id = p.parking_id
+        where 1=1
+        and year(a.end_date) = ${year}
+        and month(a.end_date) = ${month} and day(a.end_date) = ${day}
+        <if test="parkingId != '' and parkingId != null">
+            and a.parking_id = #{parkingId}
+        </if>
+        <if test="parkingAddress != '' and parkingAddress != null">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        GROUP BY DATE_FORMAT(a.end_date,'%Y-%m-%d %h')
+    </select>
+
+    <select id="queryDataByDate" parameterType="Map" resultType="Map">
+        select * from parking_orders a
+        where a.crt_time between #{beginTime} and #{endTime}
+    </select>
+</mapper>

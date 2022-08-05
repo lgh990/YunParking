@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.charge.mapper.ChargeByTimePeriodMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.charge.entity.ChargeByTimePeriod" id="chargeByTimePeriodMap">
+        <result property="lrId" column="lr_id"/>
+        <result property="odAfterHourF" column="od_after_hour_f"/>
+        <result property="odAfterHourlL" column="od_after_hourl_l"/>
+        <result property="odAfterPrice" column="od_after_price"/>
+        <result property="odEndTime" column="od_end_time"/>
+        <result property="odFirstHour" column="od_first_hour"/>
+        <result property="odFirstPrice" column="od_first_price"/>
+        <result property="odFreeMin" column="od_free_min"/>
+        <result property="odLastHour" column="od_last_hour"/>
+        <result property="odLastPrice" column="od_last_price"/>
+        <result property="odStartTime" column="od_start_time"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="wdAfterHourF" column="wd_after_hour_f"/>
+        <result property="wdAfterHourL" column="wd_after_hour_l"/>
+        <result property="wdAfterPrice" column="wd_after_price"/>
+        <result property="wdEndTime" column="wd_end_time"/>
+        <result property="wdFirstHour" column="wd_first_hour"/>
+        <result property="wdFirstPrice" column="wd_first_price"/>
+        <result property="wdFreeMin" column="wd_free_min"/>
+        <result property="wdLastHour" column="wd_last_hour"/>
+        <result property="wdLastPrice" column="wd_last_price"/>
+        <result property="wdStartTime" column="wd_start_time"/>
+        <result property="luargingrodeType" column="luargingrode_type"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="mcOpenFlag" column="mc_open_flag"/>
+        <result property="monthsCardPrice" column="months_card_price"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+
+</mapper>

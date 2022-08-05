@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>支付</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        html,body{
+            height: 100%;
+            background: #f5f5f5;
+        }
+        body{
+            font-family: "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+            font-size:16px;
+            color: #666666;
+        }
+        hr{
+            display: block;
+            height: 1px;
+            border: 0;
+            border-top: 1px solid #eeeeee;
+            width: 100%;
+        }
+        .wrapper{
+            height: 100%;
+        }
+        .wrapper .orderinfo{
+            padding:0 10px;
+            background: #fff;
+        }
+        .orderinfo .money{
+            padding:70px 0;
+            text-align: center;
+        }
+        .money .symbol{
+            font-size: 26px;
+            color:#000;
+        }
+        .money .num{
+            font-size: 56px;
+            color:#000;
+
+        }
+
+        .detail .p{
+            padding:15px 8px;
+        }
+
+        .wrapper .subbtn{
+            margin-top:80px;
+            text-align: center;
+        }
+        .subbtn .truebtn{
+            background-color: #02aaf1;
+            color: #FFFFFF;
+            border: none;
+            width: 90%;
+            height: 50px;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        .wrapper .content{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <form id="alipay" name=alipayment action='http://jxcadmin.iok.la/api/parking/pay/get_alipay_config' method="get" target="_blank">
+        <div class="orderinfo">
+            <div class="money">
+                <p>
+                    <span class="symbol">¥</span>&nbsp;&nbsp;<span class="num" id="moneynum"></span>
+                </p>
+                <p>支付停车费</p>
+            </div>
+            <hr>
+            <div class="detail">
+                <div class="p">
+                    <span>收款方：</span><span>北京昌平路侧停车</span>
+                </div>
+                <hr>
+                <div class="p">
+                    <span>订单编号：</span><span id="ordernum"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <input id="WIDout_trade_no" name="WIDout_trade_no" />
+
+            <input id="WIDsubject" name="WIDsubject" />
+
+            <input id="WIDtotal_amount" name="WIDtotal_amount" />
+
+            <input id="WIDbody" name="WIDbody" />
+
+
+        </div>
+
+        <div class="subbtn">
+            <button class="truebtn" id="wxpaybtn" type="submit" style="text-align:center;">确认支付</button>
+        </div>
+
+    </form>
+</div>
+</body>
+<script src="/api/parking/url.js"></script>
+<script language="javascript">
+
+    var formAlipay=document.getElementById("alipay");
+   // formAlipay.setAttribute("action",get_alipay_config());
+    var locationSearch=window.location.search;
+    var searchArr=locationSearch.split("&");
+    var orderNum=searchArr[0].split("=")[1];
+    var money=searchArr[1].split("=")[1];
+    // var orderInfo=searchArr[2].split("=")[1];
+    // var goodsDes=searchArr[3].split("=")[1];
+
+    function GetDateNow() {
+        alert(orderNum+"  "+money);
+        document.getElementById("ordernum").innerText =  orderNum;
+        document.getElementById("moneynum").innerText = money;
+
+        document.getElementById("WIDout_trade_no").value =  orderNum;
+        document.getElementById("WIDsubject").value = '支付停车费';
+        document.getElementById("WIDtotal_amount").value = money;
+        document.getElementById("WIDbody").value = '北京昌平路侧停车';
+
+    }
+    GetDateNow();
+</script>
+
+</html>

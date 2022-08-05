@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.ParkingIoMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.ParkingIo" id="parkingIoMap">
+        <result property="parkingIoId" column="parking_io_id"/>
+        <result property="version" column="version"/>
+        <result property="angle" column="angle"/>
+        <result property="parkingAreaId" column="parking_area_id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="parkingIoName" column="parking_io_name"/>
+        <result property="parkingIoNameCh" column="parking_io_name_ch"/>
+        <result property="parkingIoType" column="parking_io_type"/>
+        <result property="x" column="x"/>
+        <result property="y" column="y"/>
+        <result property="zoom" column="zoom"/>
+        <result property="ioLastplate" column="io_lastplate"/>
+        <result property="cameraSn" column="camera_sn"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+
+</mapper>

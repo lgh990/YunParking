@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yuncitys.smart.security.admin.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.yuncitys.smart.security.admin.entity.User">
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="tel_phone" jdbcType="VARCHAR" property="telPhone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result property="crtUserName" column="crt_user_name"/>
+    <result property="crtUserId" column="crt_user_id"/>
+    <result property="crtTime" column="crt_time"/>
+    <result property="updUserName" column="upd_user_name"/>
+    <result property="updUserId" column="upd_user_id"/>
+    <result property="updTime" column="upd_time"/>
+    <result column="attr1" jdbcType="VARCHAR" property="attr1" />
+    <result column="attr2" jdbcType="VARCHAR" property="attr2" />
+    <result column="attr3" jdbcType="VARCHAR" property="attr3" />
+    <result column="attr4" jdbcType="VARCHAR" property="attr4" />
+    <result column="attr5" jdbcType="VARCHAR" property="attr5" />
+    <result column="attr6" jdbcType="VARCHAR" property="attr6" />
+    <result column="attr7" jdbcType="VARCHAR" property="attr7" />
+    <result column="attr8" jdbcType="VARCHAR" property="attr8" />
+    <result column="depart_id" jdbcType="VARCHAR" property="departId" />
+    <result column="is_deleted" jdbcType="VARCHAR" property="isDeleted"/>
+    <result column="is_disabled" jdbcType="VARCHAR" property="isDisabled"/>
+    <result column="is_super_admin" jdbcType="VARCHAR" property="isSuperAdmin"/>
+    <result column="tenant_id" jdbcType="VARCHAR" property="tenantId"/>
+  </resultMap>
+
+  <select id="selectMemberByGroupId" resultMap="BaseResultMap">
+    select u.username,u.name,u.id from base_user u
+    left join  base_group_member gm
+    on gm.user_id = u.id where gm.group_id = #{groupId}
+  </select>
+  <select id="selectLeaderByGroupId" resultMap="BaseResultMap">
+    select u.username,u.name,u.id from base_user u
+    left join base_group_leader gm
+    on gm.user_id = u.id where gm.group_id = #{groupId}
+  </select>
+  <select id="selectUserDataDepartIds" resultType="java.lang.String">
+    select bd.id from base_depart bd
+    inner join
+    base_position_depart bpd
+    on bpd.depart_id = bd.id
+    inner join base_position_user bpu
+    on bpd.position_id = bpu.position_id
+    where bpu.user_id = #{userId}
+  </select>
+</mapper>

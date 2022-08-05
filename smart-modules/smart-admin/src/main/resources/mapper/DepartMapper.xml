@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yuncitys.smart.security.admin.mapper.DepartMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.yuncitys.smart.security.admin.entity.Depart" id="departMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="code" column="code"/>
+        <result property="path" column="path"/>
+        <result property="type" column="type"/>
+        <result property="crtUserName" column="crt_user_name"/>
+        <result property="crtUserId" column="crt_user_id"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="updUserName" column="upd_user_name"/>
+        <result property="updUserId" column="upd_user_id"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="tenantId" column="tenant_id"/>
+    </resultMap>
+    <insert id="insertDepartUser">
+      insert into base_depart_user (id,user_id,depart_id,tenant_id) values (#{id},#{userId},#{departId},#{tenantId})
+    </insert>
+    <delete id="deleteDepartUser">
+      delete from base_depart_user where depart_id = #{departId} and user_id = #{userId}
+    </delete>
+    <select id="selectDepartUsers" resultType="com.yuncitys.smart.security.admin.entity.User">
+      select u.name,u.username,u.id,u.sex,u.description,u.depart_id from base_depart d
+          inner join base_depart_user bdu
+        on bdu.depart_id = d.id
+          inner join
+          base_user u
+        on bdu.user_id = u.id
+      where bdu.depart_id = #{departId}
+       <if test="userName!=null">
+        and u.name like #{userName}
+        and u.is_deleted = '0'
+        and u.is_disabled = '0'
+       </if>
+    </select>
+
+</mapper>

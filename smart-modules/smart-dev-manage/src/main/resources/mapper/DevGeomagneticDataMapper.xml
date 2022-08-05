@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.dev.mapper.DevGeomagneticDataMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.dev.entity.DevGeomagneticData" id="devGeomagneticDataMap">
+        <result property="id" column="id"/>
+        <result property="onerankdevSn" column="onerankdev_sn"/>
+        <result property="devId" column="dev_id"/>
+        <result property="upackageCount" column="upackage_count"/>
+        <result property="dateLength" column="date_length"/>
+        <result property="batteryVoltage" column="battery_voltage"/>
+        <result property="brightnessValue" column="brightness_value"/>
+        <result property="temperatureHumidity" column="temperature_humidity"/>
+        <result property="radarModuleWorkState" column="radar_module_work_state"/>
+        <result property="lotType" column="lot_type"/>
+        <result property="ddaSignalStrength" column="dda_signal_strength"/>
+        <result property="solarInputVoltage" column="solar_input_voltage"/>
+        <result property="solarOutputVoltage" column="solar_output_voltage"/>
+        <result property="devType" column="dev_type"/>
+        <result property="crtTime" column="crt_time"/>
+    </resultMap>
+    <select id="queryDevGeomagneticDataList" resultMap="devGeomagneticDataMap">
+        SELECT * FROM dev_geomagnetic_data WHERE dev_type=#{devType} AND onerankdev_sn=#{onerankdevSn} AND crt_time BETWEEN #{beginDate} AND #{endDate} ORDER BY crt_time
+    </select>
+    <select id="queryDevGeomagneticData" resultMap="devGeomagneticDataMap">
+        SELECT * FROM dev_geomagnetic_data WHERE dev_type=#{devType} AND onerankdev_sn=#{onerankdevSn}  ORDER BY crt_time desc limit 1
+    </select>
+</mapper>

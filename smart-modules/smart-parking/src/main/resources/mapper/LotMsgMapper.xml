@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.LotMsgMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.LotMsg" id="lotMsgMap">
+        <result property="lmId" column="lm_id"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="lotTime" column="lot_time"/>
+        <result property="endDate" column="end_date"/>
+        <result property="plateId" column="plate_id"/>
+        <result property="spaceId" column="space_id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="phone" column="phone"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="queryRunLotMsgBySpaceId" resultMap="lotMsgMap">
+    SELECT * FROM lot_msg WHERE space_id =#{spaceId} AND ISNULL(end_date) order by crt_time limit 1
+    </select>
+    <select id="queryRunLotMsgByParkingIdAndSpaceType" resultMap="lotMsgMap">
+        SELECT a.* FROM lot_msg a ,parking_space b WHERE a.space_id=b.space_id AND ISNULL(end_date) AND b.parking_id =#{parkingId} and b.space_type=#{spaceType}
+    </select>
+    <select id="queryLotMsgs" parameterType="Map" resultType="Map">
+        select
+        lm.begin_date,
+        lm.end_date,
+        lm.lot_time,
+        lm.parking_id,
+        pk.parking_name,
+        lm.plate_id,
+        pl.car_number,
+        lm.space_id,
+        ps.space_num,
+        lm.crt_time
+        from lot_msg lm
+        left join parking pk on lm.parking_id = pk.parking_id
+        left join plate pl on lm.plate_id = pl.pla_id
+        left join parking_space ps on lm.space_id = ps.space_id
+        where 1=1
+        <if test="spaceNum != null and spaceNum != ''">
+            and ps.space_num LIKE CONCAT(CONCAT('%', #{spaceNum}), '%')
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and lm.crt_time between #{beginTime} and #{endTime}
+        </if>
+        order by lm.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="queryLotMsgsCount"  resultType="Integer">
+        select
+        count(1)
+        from lot_msg lm
+        left join parking pk on lm.parking_id = pk.parking_id
+        left join plate pl on lm.plate_id = pl.pla_id
+        left join parking_space ps on lm.space_id = ps.space_id
+        where 1=1
+        <if test="spaceNum != null and spaceNum != ''">
+            and ps.space_num LIKE CONCAT(CONCAT('%', #{spaceNum}), '%')
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and lm.crt_time between #{beginTime} and #{endTime}
+        </if>
+    </select>
+
+</mapper>

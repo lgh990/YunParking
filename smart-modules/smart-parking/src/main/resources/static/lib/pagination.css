@@ -1,0 +1,45 @@
+/*
+* @Author: Administrator
+* @Date:   2017-06-14 18:04:23
+* @Last Modified by:   Administrator
+* @Last Modified time: 2017-06-14 18:14:15
+*/
+@charset "utf-8";
+.pagination{
+    display: inline-block;
+    padding-left: 0;
+    margin:0;
+    border-radius: 4px;
+}
+
+.pagination a,.pagination span{
+	position: relative;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #428bca;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.pagination span:last-child{
+	padding: 0;
+	border: 0;
+}
+.pagination input{
+	width:54px;
+	height: 30px;
+	outline: none;
+    padding: 6px 12px;
+    margin:0 8px 0 10px;
+    color: #428bca;
+    text-decoration: none;
+    border: 1px solid #ddd;
+}
+
+.pagination .current{
+	background:#26B;color:#fff;
+}
+.pagination .current.prev, .pagination .current.next{
+	color:#999;background:#fff;
+}

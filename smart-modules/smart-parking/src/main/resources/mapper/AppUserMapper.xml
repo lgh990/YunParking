@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.AppUserMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.AppUser" id="appUserMap">
+        <result property="id" column="id"/>
+        <result property="mobile" column="mobile"/>
+        <result property="name" column="name"/>
+        <result property="password" column="password"/>
+        <result property="money" column="money"/>
+        <result property="vipOrderNum" column="vip_order_num"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="profession" column="profession"/>
+        <result property="company" column="company"/>
+        <result property="position" column="position"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="nosecretPayFlag" column="nosecret_pay_flag"/>
+        <result property="authType" column="auth_type"/>
+        <result property="userType" column="user_type"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="isSettingPwd" column="is_setting_pwd"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="queryEveryMonthCountByYear" parameterType="Map" resultType="Map" >
+        SELECT
+            sum( CASE MONTH ( a.crt_time ) WHEN '1' THEN 1 ELSE 0 END ) AS January,
+            sum( CASE MONTH ( a.crt_time ) WHEN '2' THEN 1 ELSE 0 END ) AS February,
+            sum( CASE MONTH ( a.crt_time ) WHEN '3' THEN 1 ELSE 0 END ) AS March,
+            sum( CASE MONTH ( a.crt_time ) WHEN '4' THEN 1 ELSE 0 END ) AS April,
+            sum( CASE MONTH ( a.crt_time ) WHEN '5' THEN 1 ELSE 0 END ) AS May,
+            sum( CASE MONTH ( a.crt_time ) WHEN '6' THEN 1 ELSE 0 END ) AS June,
+            sum( CASE MONTH ( a.crt_time ) WHEN '7' THEN 1 ELSE 0 END ) AS July,
+            sum( CASE MONTH ( a.crt_time ) WHEN '8' THEN 1 ELSE 0 END ) AS August,
+            sum( CASE MONTH ( a.crt_time ) WHEN '9' THEN 1 ELSE 0 END ) AS September,
+            sum( CASE MONTH ( a.crt_time ) WHEN '10' THEN 1 ELSE 0 END ) AS October,
+            sum( CASE MONTH ( a.crt_time ) WHEN '11' THEN 1 ELSE 0 END ) AS November,
+            sum( CASE MONTH ( a.crt_time ) WHEN '12' THEN 1 ELSE 0 END ) AS December
+        FROM
+	    itparking.app_user a
+        WHERE YEAR ( a.crt_time ) = ${queryYear}
+    </select>
+
+    <select id="queryEveryDayCountByMouth" parameterType="Map" resultType="Map" >
+        SELECT
+            COUNT(1) AS countNumber,
+            DATE_FORMAT(crt_time,'%Y-%m-%d') AS dateTime
+        FROM itparking.app_user
+        where YEAR ( crt_time ) = ${queryYear}
+            and MONTH ( crt_time ) = ${queryMonth}
+        GROUP BY DATE_FORMAT(crt_time,'%Y-%m-%d');
+    </select>
+
+    <select id="queryUserByType" parameterType="Map" resultType="Long">
+        select count(1) as countNumber
+        from itparking.app_user
+        where 1=1
+        <if test="userType != '' and userType != null">
+            and user_type = #{userType}
+        </if>
+    </select>
+</mapper>

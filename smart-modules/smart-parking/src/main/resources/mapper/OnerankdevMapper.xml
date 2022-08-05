@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.OnerankdevMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.Onerankdev" id="onerankdevMap">
+        <result property="devId" column="dev_id"/>
+        <result property="onerankdevType" column="onerankdev_type"/>
+        <result property="onerankdevDevSn" column="onerankdev_dev_sn"/>
+        <result property="lastFlowDate" column="last_flow_date"/>
+        <result property="onerankdevTerminId" column="onerankdev_termin_id"/>
+        <result property="flowNum" column="flow_num"/>
+        <result property="geomagBhPeriod" column="geomag_bh_period"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="queryOnerankdevBySpaceid" resultMap="onerankdevMap">
+        select b.* from space_onerankde a
+        right join onerankdev b on a.onerankdev_sn=b.onerankdev_dev_sn
+        where  a.space_id = #{id}
+    </select>
+    <select id="queryOnerankdevBySpaceidAndDevType" resultMap="onerankdevMap">
+        select b.* from space_onerankde a
+        right join onerankdev b on a.onerankdev_sn=b.onerankdev_dev_sn
+        where  a.space_id = #{spaceId}
+        <if test="devType!=null">
+            AND b.onerankdev_type=#{devType}
+        </if>
+    </select>
+
+    <select id="querySpaceUnbindOnerankdevByDevtype" resultMap="onerankdevMap">
+        select b.* from space_onerankde a
+        right join onerankdev b on a.onerankdev_sn=b.onerankdev_dev_sn
+        where  a.onerankdev_sn is null and onerankdev_type= #{devType}
+    </select>
+
+    <select id="queryBindOnerankdevByIoidAndDevType" resultMap="onerankdevMap">
+        SELECT b.* FROM io_onerankde a
+        RIGHT JOIN onerankdev b ON a.onerankdev_sn=b.onerankdev_dev_sn
+        WHERE  a.PARKINGIO_ID = #{id}
+        <if test="devType!=null">
+            AND b.onerankdev_type=#{devType}
+        </if>
+    </select>
+
+
+    <select id="queryBindOnerankdevBy" resultMap="onerankdevMap">
+        SELECT b.* FROM io_onerankde a, onerankdev b ,parking_io c WHERE  a.onerankdev_sn=b.onerankdev_dev_sn AND c.parking_io_id=a.parkingio_id
+        AND camera_sn =#{cameraSn}
+    </select>
+
+    <select id="queryBindOnerankdevByParkingIdAndDevType" resultMap="onerankdevMap">
+        SELECT b.* FROM io_onerankde a, onerankdev b ,parking_io c WHERE  a.onerankdev_sn=b.onerankdev_dev_sn AND c.parking_io_id=a.parkingio_id
+        AND c.parking_id =#{parkingId}
+        <if test="devType!=null">
+            AND b.onerankdev_type=#{devType}
+        </if>
+    </select>
+
+    <select id="queryIoUnbindOnerankdevByDevtype" resultMap="onerankdevMap">
+        SELECT b.* FROM io_onerankde a
+        RIGHT JOIN onerankdev b ON a.onerankdev_sn=b.onerankdev_dev_sn
+        WHERE  a.onerankdev_sn IS NULL AND onerankdev_type= #{devType}
+    </select>
+
+
+
+</mapper>

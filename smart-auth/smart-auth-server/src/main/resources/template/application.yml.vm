@@ -1,0 +1,83 @@
+logging:
+    level:
+#        tk.mybatis: DEBUG
+        ${package}: DEBUG
+server:
+    port: 9999
+
+spring:
+    application:
+        name: ${clientId}
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+        default-property-inclusion: non_null
+    datasource:
+        name: test
+        url: jdbc:mysql://119.23.224.60:3306/ag_admin?useUnicode=true&characterEncoding=UTF8
+        username: root
+        password: Syg18664566931
+        # 使用druid数据源
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        druid:
+            filters: stat
+            maxActive: 20
+            initialSize: 1
+            maxWait: 60000
+            minIdle: 1
+            timeBetweenEvictionRunsMillis: 60000
+            minEvictableIdleTimeMillis: 300000
+            validationQuery: select 'x'
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            poolPreparedStatements: true
+            maxOpenPreparedStatements: 20
+    redis:
+        database: 1
+        host: localhost
+        port: 6379
+        password: smart.IOT@yunctiys1_redis
+        pool:
+            max-active: 20
+#if($zipkin)
+    rabbitmq:
+        host: localhost
+        port: 5672
+        username: guest
+        password: guest
+    zipkin:
+        enabled: true
+    sleuth:
+        sampler:
+            percentage: 1
+    #end
+
+# 配置数据库
+mybatis:
+    mapper-locations: "classpath*:mapper/*.xml"
+
+# 配置swagger
+swagger:
+    enabled: true
+    base-package: ${package}
+    title: ${clientId}
+    version: 1.0.0.SNAPSHOT
+    description: ${description}
+    contact:
+        name: ${author}
+
+# 配置用户认证和服务认证信息
+auth:
+  serviceId: smart-auth
+  user:
+    token-header: Authorization
+    limit-expire: 1440 # 一天过去,单位分钟
+  client:
+    id: ${clientId}
+    secret: ${clientSecret}
+    token-header: client-token
+
+mapper:
+  mappers: com.yuncitys.smart.security.common.mapper.CommonMapper

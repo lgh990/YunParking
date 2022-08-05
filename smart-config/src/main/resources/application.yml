@@ -1,0 +1,31 @@
+spring:
+    application:
+        name: smart-config
+    cloud:
+        config:
+            profile: test  #dev，test，prod
+            uri: http://192.168.1.104:8750
+
+            server:
+                git:
+                    uri: http://gitlabyun:9090/root/parkingconfig.git
+                    username: csf
+                    password: yuncitys.com
+
+
+server:
+    port: 8750 #启动端口
+
+eureka:
+    instance:
+        statusPageUrlPath: /info
+        healthCheckUrlPath: /health
+        # docker 部署开启
+        prefer-ip-address: true
+        #ip-address: localhost
+        leaseRenewalIntervalInSeconds: 5
+    client:
+        serviceUrl:
+            defaultZone: http://192.168.1.104:8761/eureka/
+                    # docker 部署开启
+        #defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/

@@ -1,0 +1,143 @@
+#logging:
+#    level:
+##        tk.mybatis: DEBUG
+#        com.smart.iot.charge: DEBUG
+#server:
+#    port: 9998
+#
+#spring:
+#    application:
+#        name: smart-charge-server
+#    jackson:
+#        date-format: yyyy-MM-dd HH:mm:ss
+#        time-zone: GMT+8
+#        default-property-inclusion: non_null
+#    datasource:
+#        name: test
+#        url: jdbc:mysql://localhost:3306/yx-itparking?useUnicode=true&characterEncoding=UTF8
+#        username: root
+#        password: smart.IOT@yunctiys52
+#        # 使用druid数据源
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        druid:
+#            filters: stat
+#            maxActive: 20
+#            initialSize: 1
+#            maxWait: 60000
+#            minIdle: 1
+#            timeBetweenEvictionRunsMillis: 60000
+#            minEvictableIdleTimeMillis: 300000
+#            validationQuery: select 'x'
+#            testWhileIdle: true
+#            testOnBorrow: false
+#            testOnReturn: false
+#            poolPreparedStatements: true
+#            maxOpenPreparedStatements: 20
+#    redis:
+#        database: 1
+#        host: localhost
+#        port: 6379
+#        password:
+#        pool:
+#            max-active: 20
+#    rabbitmq:
+#      host: ${RABBIT_MQ_HOST:119.23.224.60}
+#      port: ${RABBIT_MQ_PORT:5672}
+#      username: huan
+#      password: admin123
+#    zipkin:
+#        enabled: true
+#    sleuth:
+#        sampler:
+#            percentage: 1
+#
+## 配置数据库
+#mybatis:
+#    mapper-locations: "classpath*:mapper/*.xml"
+#
+## 配置swagger
+#swagger:
+#    enabled: true
+#    base-package: com.smart.iot.charge
+#    title: smart-charge-server
+#    version: 1.0.0.SNAPSHOT
+#    description: 城市智能停车平台
+#    contact:
+#        name: admin
+## 鉴权策略ID，对应 SecurityReferences ID
+#    authorization:
+#      name: Authorization
+#      key-name: Authorization
+#      auth-regex: ^.*$
+## 配置用户认证和服务认证信息
+#auth:
+#  serviceId: smart-auth
+#  user:
+#    token-header: Authorization
+#    limit-expire: 1440 # 一天过去,单位分钟
+#  client:
+#    id: smart-charge-server
+#    secret: 123456
+#    token-header: client-token
+#
+#mapper:
+#  mappers: com.yuncitys.smart.security.common.mapper.CommonMapper
+#
+#eureka:
+#  instance:
+#    statusPageUrlPath: /info
+#    healthCheckUrlPath: /health
+#    # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#    prefer-ip-address: true
+#    ip-address: 192.168.1.104
+#  client:
+#    serviceUrl:
+#      #defaultZone: http://localhost:8761/eureka/
+#      # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#      defaultZone: http://${EUREKA_HOST:192.168.1.104}:${EUREKA_PORT:8761}/eureka/
+#
+##请求和响应GZIP压缩支持
+#feign:
+#  httpclient:
+#    enabled: false
+#  okhttp:
+#    enabled: true
+#  compression:
+#    request:
+#      enabled: true
+#      mime-types: text/xml,application/xml,application/json
+#      min-request-size: 2048
+#    response:
+#      enabled: true
+#
+#
+#
+#ribbon:
+#  eureka:
+#    enabled: true
+#  ReadTimeout: 240000
+#  ConnectTimeout: 240000
+#  MaxAutoRetries: 0
+#  MaxAutoRetriesNextServer: 0
+#  OkToRetryOnAllOperations: false
+#  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+#
+#
+#hystrix:
+#  threadpool:
+#    default:
+#      coreSize: 1000
+#      maxQueueSize: 1000
+#      queueSizeRejectionThreshold: 500
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 50000
+#          strategy: SEMAPHORE
+## txmanager地址
+#tm:
+#  manager:
+#    url: http://127.0.0.1:8899/tx/manager/

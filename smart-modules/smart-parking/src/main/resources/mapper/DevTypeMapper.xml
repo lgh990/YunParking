@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.DevTypeMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.DevType" id="devTypeMap">
+        <result property="id" column="id"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdDate" column="created_date"/>
+        <result property="lastUpdateBy" column="last_update_by"/>
+        <result property="lastUpdateDate" column="last_update_date"/>
+        <result property="dataOwnedSys" column="data_owned_sys"/>
+        <result property="parkingType" column="parking_type"/>
+        <result property="typeName" column="type_name"/>
+        <result property="typeCode" column="type_code"/>
+        <result property="attribute1" column="attribute1"/>
+        <result property="attribute2" column="attribute2"/>
+        <result property="attribute3" column="attribute3"/>
+        <result property="attribute4" column="attribute4"/>
+    </resultMap>
+    <select id="queryOnerankeByScenetype" resultMap="devTypeMap">
+        SELECT b.* FROM scene_dev a,dev_type b WHERE a.dev_type_id = b.id and scene_type=#{sceneType}
+    </select>
+
+</mapper>

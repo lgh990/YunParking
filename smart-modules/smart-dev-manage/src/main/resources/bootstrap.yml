@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    config:
+      discovery:
+        service-id: smart-config
+        enabled: true
+      label: master  # git 分支
+      name: smart-dev-manage
+      profile: dev  #dev，test，prod
+      uri: http://192.168.1.104:8750

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.charge.mapper.ChargeByHoursMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.charge.entity.ChargeByHours" id="chargeByHoursMap">
+        <result property="lrId" column="lr_id"/>
+        <result property="freeTime" column="free_time"/>
+        <result property="firstStartTime" column="first_start_time"/>
+        <result property="firstEndTime" column="first_end_time"/>
+        <result property="firstHours" column="first_hours"/>
+        <result property="firstPrice" column="first_price"/>
+        <result property="firstHoursPrice" column="first_hours_price"/>
+        <result property="odEndTime" column="od_end_time"/>
+        <result property="odLastPrice" column="od_last_price"/>
+        <result property="odStartTime" column="od_start_time"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="tdPrice" column="td_price"/>
+        <result property="tdHours" column="td_hours"/>
+        <result property="tdHoursPrice" column="td_hours_price"/>
+        <result property="openFlag" column="open_flag"/>
+        <result property="monthsCardPrice" column="months_card_price"/>
+        <result property="carType" column="car_type"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.dev.mapper.OnerankdevMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.dev.entity.Onerankdev" id="onerankdevMap">
+        <result property="devId" column="dev_id"/>
+        <result property="gwSn" column="gw_sn"/>
+        <result property="deviceSn" column="device_sn"/>
+        <result property="onerankdevType" column="onerankdev_type"/>
+        <result property="onerankdevDevSn" column="onerankdev_dev_sn"/>
+        <result property="lastFlowDate" column="last_flow_date"/>
+        <result property="onerankdevTerminId" column="onerankdev_termin_id"/>
+        <result property="flowNum" column="flow_num"/>
+        <result property="geomagBhPeriod" column="geomag_bh_period"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="queryOnerankdevList" resultType="Map">
+        select o.gw_sn,o.onerankdev_dev_sn,b.space_num,c.area_name,
+        e.parking_io_name,o.onerankdev_type,o.dev_id,o.onerankdev_termin_id
+        ,o.address,o.manufacturer,o.type,b.space_id,e.parking_io_id,o.device_sn,o.attr1
+        from onerankdev o
+        LEFT JOIN space_onerankde a on o.onerankdev_dev_sn = a.onerankdev_sn
+        LEFT JOIN parking_space b on b.space_id=a.space_id
+        LEFT JOIN parking_area c on c.area_id = b.area_id
+        LEFT JOIN io_onerankde d on d.onerankdev_sn = o.onerankdev_dev_sn
+        LEFT JOIN parking_io e on e.parking_io_id = d.parkingio_id
+        where type=#{type}
+        <if test="gwSn!=null and gwSn!=''">
+            and o.gw_sn= #{gwSn}
+        </if>
+        <if test="onerankdevDevSn!=null and onerankdevDevSn!=''">
+            and o.device_sn like '%${onerankdevDevSn}%'
+        </if>
+        <if test="devType!=null and devType!=''">
+            and o.onerankdev_type = #{devType}
+        </if>
+        order by o.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+    <select id="queryOnerankdevCount" resultType="Integer">
+        select count(1) from onerankdev o
+        LEFT JOIN space_onerankde a on o.onerankdev_dev_sn = a.onerankdev_sn
+        LEFT JOIN parking_space b on b.space_id=a.space_id
+        LEFT JOIN parking_area c on c.area_id = b.area_id
+        LEFT JOIN io_onerankde d on d.onerankdev_sn = o.onerankdev_dev_sn
+        LEFT JOIN parking_io e on e.parking_io_id = d.parkingio_id
+        where   type=#{type}
+        <if test="gwSn!=null and gwSn!=''">
+            and o.gw_sn= #{gwSn}
+        </if>
+        <if test="devType!=null and devType!=''">
+            and o.onerankdev_type = #{devType}
+        </if>
+        <if test="onerankdevDevSn!=null and onerankdevDevSn!=''">
+            and o.onerankdev_dev_sn like '%${onerankdevDevSn}%'
+        </if>
+    </select>
+    <select id="querySceneType" resultType="String">
+          select s.scene_type from dev_type d
+          LEFT JOIN scene_dev s on d.id=s.dev_type_id
+          where type_code=#{devType}
+    </select>
+
+    <select id="querySpaceList" resultType="Map">
+        select s.space_num,c.area_name,s.space_id from space_onerankde a
+        RIGHT JOIN parking_space s on s.space_id = a.space_id
+        LEFT JOIN parking_area c on c.area_id = s.area_id
+        where 1=1
+        <if test="areaId!=null and areaId!=''">
+            and c.area_id = #{areaId}
+        </if>
+        <if test="spaceNum!=null and spaceNum!=''">
+            and s.space_num like '%${spaceNum}%'
+        </if>
+        order by s.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+    <select id="querySpaceCount" resultType="Integer">
+        select COUNT(1) from space_onerankde a
+        RIGHT JOIN parking_space s on s.space_id = a.space_id
+        LEFT JOIN parking_area c on c.area_id = s.area_id
+        <if test="areaId!=null and areaId!=''">
+            and c.area_id = #{areaId}
+        </if>
+        <if test="spaceNum!=null and spaceNum!=''">
+            and s.space_num like '%${spaceNum}%'
+        </if>
+    </select>
+    <select id="queryIoList" resultType="Map">
+        select s.parking_io_id,s.parking_io_name,c.area_name from io_onerankde a
+        RIGHT JOIN parking_io s on s.parking_io_id = a.parkingio_id
+        LEFT JOIN parking_area c on c.area_id = s.parking_area_id
+        <if test="areaId!=null and areaId!=''">
+            and c.area_id = #{areaId}
+        </if>
+        <if test="ioName!=null and ioName!=''">
+            and s.parking_io_name like '%${ioName}%'
+        </if>
+        order by s.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+    <select id="queryIoCount" resultType="Integer">
+        select count(1) from io_onerankde a
+        RIGHT JOIN parking_io s on s.parking_io_id = a.parkingio_id
+        LEFT JOIN parking_area c on c.area_id = s.parking_area_id
+        <if test="areaId!=null and areaId!=''">
+            and c.area_id = #{areaId}
+        </if>
+        <if test="ioName!=null and ioName!=''">
+            and s.parking_io_name like '%${ioName}%'
+        </if>
+    </select>
+
+    <select id="queryEveryMonthCountByYear" parameterType="Map" resultType="Map" >
+        SELECT
+        sum( CASE MONTH ( a.crt_time ) WHEN '1' THEN 1 ELSE 0 END ) AS January,
+        sum( CASE MONTH ( a.crt_time ) WHEN '2' THEN 1 ELSE 0 END ) AS February,
+        sum( CASE MONTH ( a.crt_time ) WHEN '3' THEN 1 ELSE 0 END ) AS March,
+        sum( CASE MONTH ( a.crt_time ) WHEN '4' THEN 1 ELSE 0 END ) AS April,
+        sum( CASE MONTH ( a.crt_time ) WHEN '5' THEN 1 ELSE 0 END ) AS May,
+        sum( CASE MONTH ( a.crt_time ) WHEN '6' THEN 1 ELSE 0 END ) AS June,
+        sum( CASE MONTH ( a.crt_time ) WHEN '7' THEN 1 ELSE 0 END ) AS July,
+        sum( CASE MONTH ( a.crt_time ) WHEN '8' THEN 1 ELSE 0 END ) AS August,
+        sum( CASE MONTH ( a.crt_time ) WHEN '9' THEN 1 ELSE 0 END ) AS September,
+        sum( CASE MONTH ( a.crt_time ) WHEN '10' THEN 1 ELSE 0 END ) AS October,
+        sum( CASE MONTH ( a.crt_time ) WHEN '11' THEN 1 ELSE 0 END ) AS November,
+        sum( CASE MONTH ( a.crt_time ) WHEN '12' THEN 1 ELSE 0 END ) AS December
+        FROM
+        itparking.onerankdev  a
+        left join dev_gateway dg on a.gw_sn = dg.GW_SN
+        left join parking p on dg.PARKING_ID = p.parking_id
+        WHERE YEAR ( a.crt_time ) = ${queryYear}
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and a.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="parkingId != null and parkingId != ''">
+            and dg.PARKING_ID = #{parkingId}
+        </if>
+        <if test="parkingAddress != null and parkingAddress != ''">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+    </select>
+
+    <select id="queryEveryDayCountByMouth" parameterType="Map" resultType="Map">
+        SELECT
+        COUNT(1) AS countNumber,
+        DATE_FORMAT(a.crt_time,'%Y-%m-%d') AS dateTime
+        FROM
+        itparking.onerankdev a
+        left join dev_gateway dg on a.gw_sn = dg.GW_SN
+        left join parking p on dg.PARKING_ID = p.parking_id
+        where YEAR ( a.crt_time ) = ${queryYear}
+        and MONTH ( a.crt_time ) = ${queryMonth}
+        <if test="onerankdevType != null and onerankdevType != ''">
+            and a.onerankdev_type = #{onerankdevType}
+        </if>
+        <if test="parkingId != null and parkingId != ''">
+            and dg.PARKING_ID = #{parkingId}
+        </if>
+        <if test="parkingAddress != null and parkingAddress != ''">
+            and p.parking_address like concat('%', #{parkingAddress}, '%')
+        </if>
+        GROUP BY DATE_FORMAT(a.crt_time,'%Y-%m-%d')
+    </select>
+
+    <select id="queryDevCountByType" parameterType="Map" resultType="Integer">
+        select count(1)
+        from onerankdev o
+        left join dev_gateway dg on o.gw_sn = dg.GW_SN
+        left join parking p on dg.parking_id = p.parking_id
+        where 1 = 1
+        and o.onerankdev_type = #{onerankdevType}
+        <if test="parkingId != null and parkingId != ''">
+            and dg.PARKING_ID = #{parkingId}
+        </if>
+        and o.enabled_flag = 'y'
+    </select>
+
+    <select id="queryDevTypeList" resultType="Map">
+        SELECT id,type_name,type_code FROM dev_type
+    </select>
+
+    <select id="queryDevSnAndDeviceId" parameterType="Map" resultType="Map">
+        select device_sn devSn,
+        onerankdev_dev_sn deviceId
+        from onerankdev
+        where 1=1
+        <if test="devSn != null and devSn != ''">
+            and device_sn like concat('%', #{devSn}, '%')
+        </if>
+        limit 0,10
+    </select>
+</mapper>

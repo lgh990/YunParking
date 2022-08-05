@@ -1,0 +1,92 @@
+version: '2.1'
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:5.6.35
+    volumes:
+      - "/data/mysql1/db:/var/lib/mysql"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+  rabbitmq:
+    image: rabbitmq:management
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  eureka:
+    image: ag/smart-center
+    ports:
+      - "8761:8761"
+
+  smart-auth:
+    image: ag/smart-auth
+    ports:
+      - "9777:9777"
+    links:
+      - eureka
+    depends_on:
+      - eureka
+    environment:
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672
+
+  smart-admin:
+    image: ag/smart-admin
+    ports:
+      - "9990:9990"
+    links:
+      - smart-auth
+      - eureka
+    depends_on:
+      - eureka
+      - smart-auth
+    entrypoint: ./wait-for-it.sh smart-auth:9777 -t 600 --
+    command: java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
+    environment:
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672
+
+  smart-gate:
+    image: ag/smart-gate
+    ports:
+      - "8765:8765"
+    links:
+      - smart-auth
+      - eureka
+    depends_on:
+      - eureka
+      - smart-auth
+      - redis
+    entrypoint: ./wait-for-it.sh smart-auth:9777 -t 600 --
+    command: java -Djava.security.egd=file:/dev/./urandom -jar /app.jar
+    environment:
+      - EUREKA_HOST=eureka
+      - EUREKA_PORT=8761
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672

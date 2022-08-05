@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>订单查询</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+        ul li{
+            list-style: none;
+            padding:10px;
+        }
+        
+        .search{
+            width: 100%;
+            /* border:1px solid #ccc; */
+            padding:10px 20px;
+            font-size: 16px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            background: #eee;
+        }
+        .search span{
+            color:#625f5f;
+            padding:9px;
+        }
+        .search .inputDiv{
+            /* border:1px solid #ccc; */
+        }
+        .search input{
+            color:#222;
+            width:160px;
+            padding:10px;
+            border:none;
+            background: #ccc;
+            border-radius: 5px;
+        }
+
+        .search button{
+            border:0;
+            background: #00c0ac;
+            color:#fff;
+            padding:9px 20px;
+            border-radius: 5px;
+        }
+
+
+        .order-list ul li{
+            padding:9px 20px;
+        }
+        
+        .order-list ul li p{
+            padding:9px 0;
+        }
+        .order-list button{
+            border:0;
+            background: #00c0ac;
+            color:#fff;
+            padding:9px 20px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="search">
+        <span>车牌</span>
+        <div class="inputDiv">
+            <input type="text" id="plate">
+            <button id="searchBtn">查询</button>
+        </div>
+        
+    </div>
+    
+    <div class="order-list">
+        <ul id="orderList">
+
+        </ul>
+    </div>
+    
+		
+	<script src="/api/parking/lib/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript">
+        // 'use strict';
+        var protocol=window.location.protocol;
+        var host=window.location.host;
+
+        var urlHead="https://www.parking.yx-sz.cn/api/parking";
+        // var urlHead="192.1:68.1.25:8765/api/parking";
+        /*代理*/
+        var urlPk=urlHead+'/pay/';
+
+        var search={
+            plate:''
+        }
+        $("#searchBtn").click(function(event) {
+            search.plate=$("#plate").val();
+            $.ajax({
+                url:urlPk+"queryOrderList",
+                type : "POST",
+                dataType : "json",
+                data: {
+                    params:'{"api_name":"","params":{"carNumber":"'+search.plate+'"}}'
+                },
+                contentType : "application/x-www-form-urlencoded;charset=utf-8",
+                success: function(json) {
+                    var result=json.data;
+                    if(!Boolean(result)){
+                        return;
+                    }
+                    var html='';
+                    var arr=[];
+                    for(var i=0;i<result.length;i++){
+                        var orderNum =  result[i].orderNum;
+                        arr.push('<li>');
+                        arr.push('<p>'+ orderNum+'</p>');
+                        arr.push('<p>'+result[i].realMoney+'</p>');
+                        arr.push('<p>'+result[i].beginDate+'</p>');
+                        arr.push('<button onclick="payController(\''+orderNum+'\','+result[i].realMoney+')">支付</button>');
+                        arr.push('</li>');
+                    }
+                    html=arr.join('');
+                    $("#orderList").html(html)
+
+
+                   
+                },
+                error:function(){
+                    
+
+                }
+            });
+        });
+
+        function payController(orderNum,money){
+            window.location.href=urlHead+"/payController.html?orderNum="+orderNum+"&momey="+money;
+        }
+    
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.InspectiondetailMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.Inspectiondetail" id="inspectiondetailMap">
+        <result property="id" column="ID"/>
+        <result property="enabledFlag" column="ENABLED_FLAG"/>
+        <result property="createdBy" column="CREATED_BY"/>
+        <result property="createdDate" column="CREATED_DATE"/>
+        <result property="lastUpdateBy" column="LAST_UPDATE_BY"/>
+        <result property="lastUpdateDate" column="LAST_UPDATE_DATE"/>
+        <result property="dataOwnedSys" column="DATA_OWNED_SYS"/>
+        <result property="addr" column="ADDR"/>
+        <result property="carColor" column="CAR_COLOR"/>
+        <result property="carType" column="CAR_TYPE"/>
+        <result property="detailsn" column="DETAILSN"/>
+        <result property="detailImg" column="DETAIL_IMG"/>
+        <result property="inspId" column="INSP_ID"/>
+        <result property="latitude" column="LATITUDE"/>
+        <result property="longitude" column="LONGITUDE"/>
+        <result property="parkingId" column="PARKING_ID"/>
+        <result property="platecolor" column="PLATECOLOR"/>
+        <result property="platenum" column="PLATENUM"/>
+        <result property="sceneImg" column="SCENE_IMG"/>
+        <result property="spaceId" column="SPACE_ID"/>
+        <result property="status" column="STATUS"/>
+        <result property="ticketsImg" column="TICKETS_IMG"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="remarks" column="REMARKS"/>
+        <result property="lmId" column="LM_ID"/>
+        <result property="attribute1" column="ATTRIBUTE1"/>
+        <result property="attribute2" column="ATTRIBUTE2"/>
+        <result property="attribute3" column="ATTRIBUTE3"/>
+        <result property="attribute4" column="ATTRIBUTE4"/>
+    </resultMap>
+
+</mapper>

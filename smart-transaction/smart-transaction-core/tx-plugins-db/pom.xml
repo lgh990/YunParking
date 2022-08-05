@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.yuncitys.smart</groupId>
+        <artifactId>smart-transaction-core</artifactId>
+        <version>4.0.3.SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.yuncitys.smart</groupId>
+    <artifactId>tx-plugins-db</artifactId>
+    <version>${lcn.last.version}</version>
+
+    <name>tx-plugins-db</name>
+    <url>https://github.com/smart/smart-parking</url>
+
+    <description>tx-plugins-db project for Spring Boot</description>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.yuncitys.smart</groupId>
+            <artifactId>tx-client</artifactId>
+            <version>${lcn.last.version}</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

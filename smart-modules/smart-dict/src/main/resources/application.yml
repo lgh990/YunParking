@@ -1,0 +1,78 @@
+#logging:
+#    level:
+##        tk.mybatis: DEBUG
+#        com.yuncitys.smart.security.dict: DEBUG
+#server:
+#    port: 9999
+#
+#spring:
+#    application:
+#        name: smart-dict
+#    jackson:
+#        date-format: yyyy-MM-dd HH:mm:ss
+#        time-zone: GMT+8
+#        default-property-inclusion: non_null
+#    datasource:
+#        name: test
+#        url: jdbc:mysql://localhost:3306/ag_dict?useUnicode=true&characterEncoding=UTF8
+#        username: root
+#        password: smart.IOT@yunctiys52
+#        # 使用druid数据源
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driver-class-name: com.mysql.jdbc.Driver
+#        druid:
+#            filters: stat
+#            maxActive: 20
+#            initialSize: 1
+#            maxWait: 60000
+#            minIdle: 1
+#            timeBetweenEvictionRunsMillis: 60000
+#            minEvictableIdleTimeMillis: 300000
+#            validationQuery: select 'x'
+#            testWhileIdle: true
+#            testOnBorrow: false
+#            testOnReturn: false
+#            poolPreparedStatements: true
+#            maxOpenPreparedStatements: 20
+#    redis:
+#        database: 10
+#        host: ${REDIS_HOST:localhost}
+#        port: ${REDIS_PORT:6379}
+#        password: ${REDIS_PASSWORD:smart.IOT@yunctiys213_redis}
+#        pool:
+#            max-active: 20
+#    rabbitmq:
+#        host: ${RABBIT_MQ_HOST:localhost}
+#        port: ${RABBIT_MQ_PORT:5672}
+#        username: admin
+#        password: admin@yuncitys.com
+#    zipkin:
+#        enabled: true
+#    sleuth:
+#        sampler:
+#            percentage: 1
+#
+## 配置数据库
+#mybatis:
+#    mapper-locations: "classpath*:mapper/*.xml"
+#
+## 配置swagger
+#swagger:
+#    enabled: true
+#    base-package: com.yuncitys.smart.security.dict
+#    title: smart-dict
+#    version: 1.0.0.SNAPSHOT
+#    description: 数据字典服务
+#    contact:
+#        name: admin
+#
+## 配置用户认证和服务认证信息
+#auth:
+#  serviceId: smart-auth
+#  user:
+#    token-header: Authorization
+#    limit-expire: 1440 # 一天过去,单位分钟
+#  client:
+#    id: smart-dict
+#    secret: 123566
+#    token-header: client-token

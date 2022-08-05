@@ -1,0 +1,127 @@
+#logging:
+#  level:
+#    #        tk.mybatis: DEBUG
+#    com.yuncitys.smart.oss: DEBUG
+#server:
+#  port: 9992
+#
+#spring:
+#  profiles:
+#    active: dev
+#  application:
+#    name: smart-tool
+#  jackson:
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    time-zone: GMT+8
+#    default-property-inclusion: non_null
+#  redis:
+#    database: 1
+#    host: ${REDIS_HOST:localhost}
+#    port: ${REDIS_PORT:6379}
+#    password: ${REDIS_PASSWORD:smart.IOT@YUNCITYS1_redis}
+#    pool:
+#      max-active: 20
+#  http:
+#    multipart:
+#      max-file-size: 10Mb
+#      max-request-size: 10Mb
+## 配置数据库
+#mybatis:
+#  mapper-locations: "classpath*:mapper/*.xml"
+#
+## 配置swagger
+#swagger:
+#  enabled: true
+#  base-package: com.yuncitys.smart.oss
+#  title: smart-tools
+#  version: 1.0.0.SNAPSHOT
+#  description: 工具类模块
+#  contact:
+#    name: admin
+#
+## 配置用户认证和服务认证信息
+#auth:
+#  serviceId: smart-auth
+#  user:
+#    token-header: Authorization
+#    limit-expire: 1440 # 一天过去,单位分钟
+#  client:
+#    id: smart-tool
+#    secret: 123456
+#    token-header: client-token
+#
+#mapper:
+#  mappers: com.yuncitys.smart.security.common.mapper.CommonMapper
+#
+## 具体看类:CloudStorageConfig
+#oss:
+#  type: 2 # 类型 1：七牛  2：阿里云  3：腾讯云
+#  qiniuDomain: http://xxxxx
+#  qiniuPrefix: xxx
+#  qiniuAccessKey: xxxxx
+#  qiniuSecretKey: xxxxx
+#  qiniuBucketName: xxxx
+#
+#  aliyunDomain: http://parking.oss-cn-shenzhen.aliyuncs.com
+#  aliyunPrefix: oss
+#  aliyunEndPoint: http://oss-cn-shenzhen.aliyuncs.com
+#  aliyunAccessKeyId: LTAI3OZEAx06INin
+#  aliyunAccessKeySecret : 4SzfbebI24IuN1d3Lr8FlM7ReU3wXW
+#  aliyunBucketName: parking
+#
+#search:
+#  lucence:
+#    path: ./lucence/file
+#
+#eureka:
+#  instance:
+#    statusPageUrlPath: /info
+#    healthCheckUrlPath: /health
+#    # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#    prefer-ip-address: true
+#    ip-address: 192.168.1.247
+#  client:
+#    serviceUrl:
+#      #            defaultZone: http://localhost:8761/eureka/
+#      # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#      defaultZone: http://${EUREKA_HOST:192.168.1.247}:${EUREKA_PORT:8761}/eureka/
+#
+##请求和响应GZIP压缩支持
+#feign:
+#  hystrix:
+#    enabled: true
+#  httpclient:
+#    enabled: false
+#  okhttp:
+#    enabled: true
+#  compression:
+#    request:
+#      enabled: true
+#      mime-types: text/xml,application/xml,application/json
+#      min-request-size: 2048
+#    response:
+#      enabled: true
+#
+#ribbon:
+#  eureka:
+#    enabled: true
+#  ReadTimeout: 120000
+#  ConnectTimeout: 120000
+#  MaxAutoRetries: 0
+#  MaxAutoRetriesNextServer: 0
+#  OkToRetryOnAllOperations: false
+#  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+#
+#
+#hystrix:
+#  threadpool:
+#    default:
+#      coreSize: 5000
+#      maxQueueSize: 5000
+#      queueSizeRejectionThreshold: 1000
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 100000

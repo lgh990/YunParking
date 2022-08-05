@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.ParkingAreaMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.ParkingArea" id="parkingAreaMap">
+        <result property="areaId" column="area_id"/>
+        <result property="bgImg" column="bg_img"/>
+        <result property="changeTimes" column="change_times"/>
+        <result property="mapData" column="map_data"/>
+        <result property="areaName" column="area_name"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="areaType" column="area_type"/>
+        <result property="bgimgFlag" column="bgimg_flag"/>
+        <result property="height" column="height"/>
+        <result property="width" column="width"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+
+    <select id="queryParkingArea" parameterType="Map" resultType="Map">
+        select
+        pa.area_id,
+        pa.area_name,
+        pa.area_type,
+        pa.parking_id,
+        pk.parking_name,
+        pa.crt_time
+        from parking_area pa
+        left join parking pk on pa.parking_id = pk.parking_id
+        where 1=1
+        <if test="areaName != null and areaName != ''">
+            and pa.area_name like CONCAT(CONCAT('%', #{areaName}), '%')
+        </if>
+        <if test="areaType != null and areaType != ''">
+            and pa.area_type = #{areaType}
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and pa.crt_time between #{beginTime} and #{endTime}
+        </if>
+        order by pa.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="queryParkingAreaCount" parameterType="Map"  resultType="Integer">
+        select
+        count(1)
+        from parking_area pa
+        left join parking pk on pa.parking_id = pk.parking_id
+        where 1=1
+        <if test="areaName != null and areaName != ''">
+            and pa.area_name like CONCAT(CONCAT('%', #{areaName}), '%')
+        </if>
+        <if test="areaType != null and areaType != ''">
+            and pa.area_type = #{areaType}
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and pa.crt_time between #{beginTime} and #{endTime}
+        </if>
+    </select>
+
+</mapper>

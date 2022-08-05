@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.iot.parking.mapper.ParkingSpaceMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.smart.iot.parking.entity.ParkingSpace" id="parkingSpaceMap">
+        <result property="spaceId" column="space_id"/>
+        <result property="version" column="version"/>
+        <result property="angle" column="angle"/>
+        <result property="lotType" column="lot_type"/>
+        <result property="lockl" column="lockl"/>
+        <result property="model" column="model"/>
+        <result property="areaId" column="area_id"/>
+        <result property="parkingId" column="parking_id"/>
+        <result property="spaceNum" column="space_num"/>
+        <result property="spaceOwner" column="space_owner"/>
+        <result property="spaceStatus" column="space_status"/>
+        <result property="toward" column="toward"/>
+        <result property="type" column="type"/>
+        <result property="x" column="x"/>
+        <result property="y" column="y"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="zoom" column="zoom"/>
+        <result property="spaceClass" column="space_class"/>
+        <result property="berthNumber" column="berth_number"/>
+        <result property="userId" column="user_id"/>
+        <result property="enabledFlag" column="enabled_flag"/>
+        <result property="crtTime" column="crt_time"/>
+        <result property="crtUser" column="crt_user"/>
+        <result property="crtName" column="crt_name"/>
+        <result property="crtHost" column="crt_host"/>
+        <result property="updTime" column="upd_time"/>
+        <result property="updUser" column="upd_user"/>
+        <result property="updName" column="upd_name"/>
+        <result property="updHost" column="upd_host"/>
+        <result property="attr1" column="attr1"/>
+        <result property="attr2" column="attr2"/>
+        <result property="attr3" column="attr3"/>
+        <result property="attr4" column="attr4"/>
+        <result property="attr5" column="attr5"/>
+        <result property="attr6" column="attr6"/>
+        <result property="attr7" column="attr7"/>
+        <result property="attr8" column="attr8"/>
+        <result property="tenantId" column="tenant_id"/>
+        <result property="crtUserId" column="crt_user_id"/>
+    </resultMap>
+    <select id="findListbyParkingSpace" resultMap="parkingSpaceMap">
+    SELECT s.* FROM parking_space s,parking p,citys c WHERE c.id=p.city_id AND p.city_id=#{cityId} AND
+    p.parking_id=s.parking_id AND s.latitude != '' AND s.longitude !='' AND s.space_num =#{spacesNum} AND p.PARKING_TYPE =  #{parkingType}
+    </select>
+    <select id="updateSpaceStatus" >
+    UPDATE parking_space SET space_status=#{spaceStatus} WHERE space_id=#{spaceId}
+   </select>
+    <select id="queryRandUlotParkingSpaceByParkingId" resultMap="parkingSpaceMap">
+    SELECT * FROM parking_space a WHERE a.area_id=#{areaId}   AND a.space_type=#{spaceType} AND a.lot_type=#{spaceStatus}
+    AND a.space_id!=#{spaceId}
+    AND a.space_status='normal'
+    AND a.charge_pile=#{chargePile} ORDER BY RAND()  LIMIT 1
+    </select>
+    <select id="queryOutOfContactSpace" resultMap="parkingSpaceMap">
+        SELECT c.`space_id`, c.`version`, c.`angle`, c.`lot_type`, c.`lockl`, c.`space_type`, c.`area_id`, c.`parking_id`, c.`space_num`, c.`space_status`, c.`toward`, c.`abscissa`, c.`ordinate`, c.`latitude`, c.`longitude`, c.`charge_pile`, c.`zoom`, c.`berth_number`, c.`user_id`, c.`enabled_flag`, c.`crt_time`, c.`crt_user`, c.`crt_name`, c.`crt_host`, c.`upd_time`, c.`upd_user`, c.`upd_name`, c.`upd_host`,c.`attr2`, c.`attr3`, c.`attr4`, c.`attr5`, c.`attr6`, c.`attr7`, c.`attr8`, c.`tenant_id`, c.`crt_user_id`, a.last_flow_date AS attr1 ,a.geomag_bh_period  AS `attr2` FROM onerankdev a,space_onerankde b,parking_space c WHERE b.onerankdev_sn=a.onerankdev_dev_sn AND  b.space_id=c.space_id AND   a.onerankdev_type IN('212','213') AND a.last_flow_date &lt; (DATE_ADD(NOW(), INTERVAL -(CASE WHEN a.geomag_bh_period IS NULL THEN 50 ELSE a.geomag_bh_period END) MINUTE))
+    </select>
+
+    <select id="queryParkingSpace" resultType="Map">
+        select ps.crt_time,
+        ps.space_id,
+        pa.area_name,
+        pa.area_id,
+        ps.space_num,
+        ps.space_type,
+        p.parking_name
+        from parking_space ps
+        left join parking_area pa on ps.area_id = pa.area_id
+        left join parking p on ps.parking_id = p.parking_id
+        where 1=1
+        <if test="spaceNum != null and spaceNum != ''">
+            and ps.space_num LIKE CONCAT(CONCAT('%', #{spaceNum}), '%')
+        </if>
+        <if test="spaceType != null and spaceType != ''">
+            and ps.space_type = #{spaceType}
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and ps.crt_time between #{beginTime} and #{endTime}
+        </if>
+        order by ps.crt_time desc
+        limit ${startPoint},${limit}
+    </select>
+
+    <select id="queryParkingSpaceCount"  resultType="Integer">
+        select
+        count(1)
+        from parking_space ps
+        left join parking_area pa on ps.area_id = pa.area_id
+        left join parking p on ps.parking_id = p.parking_id
+        where 1=1
+        <if test="spaceNum != null and spaceNum != ''">
+            and ps.space_num = #{spaceNum}
+        </if>
+        <if test="spaceType != null and spaceType != ''">
+            and ps.space_type = #{spaceType}
+        </if>
+        <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and ps.crt_time between #{beginTime} and #{endTime}
+        </if>
+    </select>
+
+</mapper>

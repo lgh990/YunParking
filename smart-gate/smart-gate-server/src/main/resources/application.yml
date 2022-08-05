@@ -1,0 +1,131 @@
+#spring:
+#  application:
+#    name: smart-gate
+#  thymeleaf:
+#    mode: LEGACYHTML5
+#    cache: false
+#  jackson:
+#    date-format: yyyy-MM-dd HH:mm:ss
+#    time-zone: GMT+8
+#    default-property-inclusion: non_null
+#  redis:
+#    database: 1
+#    host: ${REDIS_HOST:localhost}
+#    port: ${REDIS_PORT:6379}
+#    password: ${REDIS_PASSWORD:}
+#    pool:
+#      max-active: 20
+#  rabbitmq:
+#    host: ${RABBIT_MQ_HOST:119.23.224.60}
+#    port: ${RABBIT_MQ_PORT:5672}
+#    username: huan
+#    password: admin123
+#  zipkin:
+#    enabled: true
+#  sleuth:
+#    sampler:
+#      percentage: 1
+#  http:
+#    multipart:
+#      max-file-size: 10Mb
+#      max-request-size: 10Mb
+#
+#server:
+#  port: 8765 #启动端口
+#
+#gate:
+#  # 开发不进行权限校验的路径
+#  ignore:
+#    startWith: /static,/auth/oauth/,/admin/v2/api-docs,/dict/v2/api-docs,/auth/v2/api-docs,/iotexper/v2/api-docs,/iotexperapp/v2/api-docs,/dict/dictValue/type/comm_sex
+#
+#auth:
+#  serviceId: smart-auth
+#  user:
+#    token-header: Authorization
+#    limit-expire: 1440 #1天
+#  client:
+#    token-header: client-token
+#    id: smart-gate  #不填则默认读取spring.application.name
+#    secret: 123456
+#
+## 配置swagger
+#swagger:
+#  enabled: true
+#  base-package: com.yuncitys.smart.security.gate
+#  title: smart-gate
+#  version: 1.0.0.SNAPSHOT
+#  description: 网关服务
+#  contact:
+#    name: gate
+#
+#
+#zuul:
+#  ignored-services: "*"
+#  sensitive-headers:
+#  prefix: /api #为zuul设置一个公共的前缀
+#  ratelimit: # 网关限流
+#    key-prefix: gate_rate
+#    enabled: true
+#    repository: REDIS #REDIS, JPA, IN_MEMORY
+#    behind-proxy: true
+#    default-policy: #optional - will apply unless specific policy exists
+#      limit: 200
+#      refresh-interval: 60 #default value (in seconds)
+#      type: #optional
+#        - user
+#        - origin
+#        - url
+#
+#ribbon:
+#  eureka:
+#    enabled: true
+#  ReadTimeout: 120000
+#  ConnectTimeout: 120000
+#  MaxAutoRetries: 0
+#  MaxAutoRetriesNextServer: 1
+#  OkToRetryOnAllOperations: false
+#  httpclient:
+#    enabled: false
+#  okhttp:
+#    enabled: true
+#
+#hystrix:
+#  threadpool:
+#    default:
+#      coreSize: 1000 ##并发执行的最大线程数，默认10
+#      maxQueueSize: 1000 ##BlockingQueue的最大队列数
+#      queueSizeRejectionThreshold: 500 ##即使maxQueueSize没有达到，达到queueSizeRejectionThreshold该值后，请求也会被拒绝
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 50000
+##          strategy: SEMAPHORE
+#
+#eureka:
+#  instance:
+#    statusPageUrlPath: /info
+#    healthCheckUrlPath: /health
+#    # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#    prefer-ip-address: true
+#    ip-address: localhost
+#  client:
+#    serviceUrl:
+#      #defaultZone: http://192.168.1.104:8761/eureka/
+#      # docker 部署开启,记得将IP修改为部署所在服务器的外网IP
+#      defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka/
+#
+##请求和响应GZIP压缩支持
+#feign:
+#  httpclient:
+#    enabled: false
+#  okhttp:
+#    enabled: true
+#  compression:
+#    request:
+#      enabled: true
+#      mime-types: text/xml,application/xml,application/json
+#      min-request-size: 2048
+#    response:
+#      enabled: true
